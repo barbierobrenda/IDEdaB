@@ -20,3 +20,14 @@ A IDE não grava o token no código nem no `localStorage`; ele permanece somente
 
 ## GitHub Pages
 Envie todos os arquivos deste ZIP para um repositório e habilite Settings → Pages → Deploy from a branch → main / root.
+
+
+## v3.3 Minimal iPad
+- Interface mais limpa e plana.
+- Barra lateral compacta com atalhos.
+- Rodapé e safe area do iPad em azul escuro, sem faixa branca.
+- Mantém GitHub, backup manual, preview e atualização.
+
+
+## v3.4 — Multi-linguagem
+Edita HTML, CSS, JavaScript, JSON, PHP/PHTML, TXT/Markdown, SQL, XML/SVG, YAML, INI/ENV, BAT/CMD/PowerShell, Python, Java, C/C++ e Delphi (PAS/DPR/DFM). HTML, CSS, JS e SVG têm preview quando possível. PHP é editável, mas precisa de servidor PHP para executar.
