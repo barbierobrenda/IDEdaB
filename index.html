@@ -22,7 +22,7 @@
     button{cursor:pointer;-webkit-tap-highlight-color:transparent}
     .app{height:100dvh;display:grid;grid-template-rows:auto auto 1fr auto}
     header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:max(10px,env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid var(--line);background:rgba(7,17,38,.94);backdrop-filter:blur(16px);z-index:10}
-    .brand{display:flex;align-items:center;gap:10px;min-width:0}.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,var(--blue2),var(--blue3));display:grid;place-items:center;color:#061129;font-weight:950;box-shadow:0 8px 24px rgba(47,128,237,.25)}
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,var(--blue2),var(--blue3));display:grid;place-items:center;color:#061129;font-weight:950;box-shadow:0 8px 24px rgba(47,128,237,.25)}
     .title{font-weight:900;letter-spacing:-.02em}.sub{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
     .top-actions,.toolbar-actions,.preview-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.top-actions{justify-content:flex-end}
     .btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:11px;padding:9px 12px;font-weight:760;min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
@@ -38,6 +38,15 @@
     footer{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);background:#0a1731;padding:8px 12px max(8px,env(safe-area-inset-bottom));font-size:11px;color:var(--muted)}
     .mobile-tabs{display:none}.toast{position:fixed;left:50%;bottom:72px;transform:translateX(-50%) translateY(15px);background:#eaf3ff;color:#071126;padding:10px 14px;border-radius:12px;font-weight:850;opacity:0;pointer-events:none;transition:.18s;box-shadow:var(--shadow);z-index:30}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     .modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;place-items:center;padding:18px;z-index:40}.modal.show{display:grid}.card{width:min(530px,100%);background:#0e1c3a;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}.card h3{margin:0 0 8px}.card p{color:var(--muted);line-height:1.45}.row{display:flex;gap:8px}.row .btn{flex:1}input[type=file]{display:none}
+
+    /* ===== GitHub v3 ===== */
+    .github-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:#0b1a38;color:var(--muted);font-size:11px;font-weight:800;white-space:nowrap}
+    .github-pill.connected{color:#cfe4ff;border-color:#376cb5;background:#102655}.github-dot{width:8px;height:8px;border-radius:50%;background:#71829f}.github-pill.connected .github-dot{background:#63e6be;box-shadow:0 0 0 4px rgba(99,230,190,.08)}
+    .github-card{width:min(760px,100%)}.github-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.github-field{display:flex;flex-direction:column;gap:5px}.github-field.full{grid-column:1/-1}.github-field label{font-size:11px;font-weight:850;color:#8fc5ff;letter-spacing:.04em}
+    .github-field input,.github-field select{width:100%;background:#0b1a38;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px 11px;outline:none;min-height:42px}.github-help{font-size:11px;color:var(--muted);line-height:1.45;margin-top:5px}.github-help strong{color:#d7e9ff}
+    .file-browser{margin-top:12px;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#0a1731;max-height:42vh;overflow-y:auto}.file-row{display:flex;align-items:center;gap:9px;padding:11px 12px;border-bottom:1px solid var(--line);cursor:pointer}.file-row:last-child{border-bottom:0}.file-row:hover{background:#10234a}.file-ico{width:25px;text-align:center}.file-main{min-width:0;flex:1}.file-main b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.file-main small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+    .github-breadcrumb{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:12px}.crumb{border:0;background:transparent;color:#8fc5ff;padding:4px 2px;font-weight:800;min-height:auto}.commit-summary{padding:12px;background:#0a1731;border:1px solid var(--line);border-radius:12px;margin:10px 0;font-size:12px;line-height:1.5}.commit-summary code{color:#bfe0ff;word-break:break-all}.security-note{padding:10px 12px;border:1px solid #315889;background:#0d244e;border-radius:11px;color:#bcd6ff;font-size:11px;line-height:1.45;margin-top:10px}.token-row{display:flex;gap:8px}.token-row input{flex:1}.github-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.github-actions .btn{flex:1;min-width:130px}
+    @media(max-width:620px){.github-grid{grid-template-columns:1fr}.github-field.full{grid-column:auto}.github-card{padding:15px}.github-actions .btn{min-width:110px}}
     @media(max-width:850px){header{align-items:flex-start}.desktop-only{display:none!important}.toolbar{padding:7px 9px}.search-wrap{min-width:230px}.workspace{grid-template-columns:1fr}.pane{display:none}.pane.active{display:grid}.mobile-tabs{display:flex;gap:6px}.mobile-tabs .btn{padding:7px 10px;min-height:34px}.sub{max-width:50vw}.preview-stage{padding:6px}}
     @media(min-width:851px){.pane{display:grid!important}}
     @media(max-width:560px){.title{font-size:14px}.sub{max-width:44vw}.top-actions .btn{padding:8px 9px}.toolbar-actions .btn span{display:none}.search-wrap{min-width:190px}.filename-input{width:135px}}
@@ -46,11 +55,12 @@
 <body>
 <div class="app">
   <header>
-    <div class="brand"><div class="logo">&lt;/&gt;</div><div><div class="title">Brenda IDE</div><div class="sub" id="fileNameLabel">projeto.html • autosave ativo</div></div></div>
+    <div class="brand"><div class="logo"><img src="brenda-ide-logo.jpg" alt="Logo Brenda IDE"></div><div><div class="title">Brenda IDE</div><div class="sub" id="fileNameLabel">projeto.html • autosave ativo</div></div></div>
     <div class="top-actions">
       <label class="btn" for="fileInput">Abrir</label><input id="fileInput" type="file" accept=".html,.htm,text/html">
       <button class="btn desktop-only" id="newBtn">Novo</button>
       <button class="btn primary" id="downloadBtn">Salvar</button>
+      <button class="btn soft" id="githubBtn">◉ GitHub</button>
       <button class="btn soft" id="updateBtn">↻ Atualizar</button>
     </div>
   </header>
@@ -61,6 +71,7 @@
       <button class="btn" id="copyBtn">⧉ <span>Copiar</span></button>
       <button class="btn" id="formatBtn">≡ <span>Formatar</span></button>
       <button class="btn" id="backupBtn">⇩ <span>Backup</span></button>
+      <button class="btn primary" id="commitBtn" disabled>☁ <span>Commitar</span></button>
     </div>
     <div class="search-wrap"><input id="searchInput" placeholder="Buscar no código…"><button class="btn icon" id="findBtn">⌕</button></div>
   </div>
@@ -81,6 +92,36 @@
 </div>
 <div class="toast" id="toast"></div>
 <div class="modal" id="newModal"><div class="card"><h3>Novo arquivo</h3><p>O conteúdo atual continuará salvo no backup local da IDE, mas o editor será substituído por um HTML novo.</p><div class="row"><button class="btn" id="cancelNew">Cancelar</button><button class="btn danger" id="confirmNew">Criar novo</button></div></div></div>
+<div class="modal" id="githubModal"><div class="card github-card">
+  <h3>GitHub</h3>
+  <div id="githubConnectionForm">
+    <p>Conecte usando um <strong>fine-grained token</strong>. Ele fica somente na sessão desta aba e não é salvo no HTML nem no localStorage.</p>
+    <div class="github-grid">
+      <div class="github-field full"><label>Token temporário</label><div class="token-row"><input id="ghToken" type="password" autocomplete="off" placeholder="github_pat_…"><button class="btn" id="ghConnect">Conectar</button></div></div>
+    </div>
+    <div class="security-note">🔒 Recomendado: token com acesso somente ao repositório escolhido e permissão <strong>Contents: Read and write</strong>. Ao fechar a aba, a IDE esquece o token.</div>
+  </div>
+  <div id="githubConnected" style="display:none">
+    <div class="github-pill connected"><span class="github-dot"></span><span id="ghUserLabel">Conectada</span></div>
+    <div class="github-grid" style="margin-top:12px">
+      <div class="github-field"><label>Repositório</label><select id="ghRepo"></select></div>
+      <div class="github-field"><label>Branch</label><input id="ghBranch" value="main"></div>
+    </div>
+    <div class="github-breadcrumb" id="ghBreadcrumb"></div>
+    <div class="file-browser" id="ghFiles"><div class="file-row"><div class="file-main"><b>Escolha um repositório</b><small>Os arquivos aparecerão aqui.</small></div></div></div>
+    <div class="github-actions"><button class="btn" id="ghRefresh">↻ Atualizar arquivos</button><button class="btn danger" id="ghDisconnect">Desconectar</button><button class="btn" id="ghClose">Fechar</button></div>
+  </div>
+  <div class="row" id="ghCancelRow" style="margin-top:12px"><button class="btn" id="ghCancel">Cancelar</button></div>
+</div></div>
+
+<div class="modal" id="commitModal"><div class="card github-card">
+  <h3>Confirmar commit</h3>
+  <p>Antes de enviar, a IDE baixará um backup local do arquivo atual.</p>
+  <div class="commit-summary">Repositório: <code id="commitRepo">—</code><br>Branch: <code id="commitBranch">—</code><br>Arquivo: <code id="commitPath">—</code></div>
+  <div class="github-field full"><label>Mensagem do commit</label><input id="commitMessage" placeholder="Ex.: Ajusta tela inicial do Dental Tech"></div>
+  <div class="security-note">Somente uma conta/token com permissão de escrita nesse repositório consegue concluir este commit.</div>
+  <div class="row" style="margin-top:12px"><button class="btn" id="commitCancel">Cancelar</button><button class="btn primary" id="commitConfirm">Backup + Commitar</button></div>
+</div></div>
 <script>
 const $=id=>document.getElementById(id);
 const editor=$('editor'),preview=$('preview'),saveStatus=$('saveStatus'),fileNameLabel=$('fileNameLabel'),fileNameInput=$('fileNameInput'),charCount=$('charCount'),lineBadge=$('lineBadge'),fileInput=$('fileInput'),toastEl=$('toast'),previewShell=$('previewShell');
@@ -94,7 +135,7 @@ function persist(){localStorage.setItem('brendaide_code',editor.value);localStor
 function scheduleUpdate(){saveStatus.textContent='salvando…';clearTimeout(updateTimer);updateTimer=setTimeout(()=>{persist();render()},180)}
 function download(content,name,type='text/html;charset=utf-8'){const blob=new Blob([content],{type});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function downloadHtml(){setFileName(fileNameInput.value);persist();download(editor.value,currentFileName);toast('HTML salvo')}
-function backupIde(){const backup={app:'Brenda IDE',version:2,date:new Date().toISOString(),filename:currentFileName,code:editor.value};const stamp=new Date().toISOString().replace(/[:.]/g,'-');download(JSON.stringify(backup,null,2),'BrendaIDE_Backup_'+stamp+'.json','application/json');toast('Backup da IDE salvo')}
+function backupIde(){const backup={app:'Brenda IDE',version:3,date:new Date().toISOString(),filename:currentFileName,code:editor.value};const stamp=new Date().toISOString().replace(/[:.]/g,'-');download(JSON.stringify(backup,null,2),'BrendaIDE_Backup_'+stamp+'.json','application/json');toast('Backup da IDE salvo')}
 function simpleFormatHTML(src){let out='',indent=0;const tokens=src.replace(/>\s*</g,'>\n<').split('\n');const voidTag=/^<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)\b/i;tokens.forEach(raw=>{const s=raw.trim();if(!s)return;if(/^<\//.test(s))indent=Math.max(0,indent-1);out+='  '.repeat(indent)+s+'\n';if(/^<[^!/][^>]*>/.test(s)&&!/^<\//.test(s)&&!voidTag.test(s)&&!/>.*<\//.test(s)&&!/<\/$/.test(s)&&!s.endsWith('/>'))indent++});return out.trimEnd()}
 editor.value=localStorage.getItem('brendaide_code')||starter;setFileName(currentFileName);render();
 editor.addEventListener('input',scheduleUpdate);fileNameInput.addEventListener('change',()=>setFileName(fileNameInput.value));
@@ -110,6 +151,30 @@ document.querySelectorAll('[data-size]').forEach(b=>b.onclick=()=>{previewShell.
 const newModal=$('newModal');$('newBtn').onclick=()=>newModal.classList.add('show');$('cancelNew').onclick=()=>newModal.classList.remove('show');$('confirmNew').onclick=()=>{backupIde();editor.value=starter;setFileName('projeto.html');persist();render();newModal.classList.remove('show');toast('Novo arquivo criado')};
 document.querySelectorAll('[data-tab]').forEach(btn=>btn.onclick=()=>{const tab=btn.dataset.tab;$('editorPane').classList.toggle('active',tab==='editor');$('previewPane').classList.toggle('active',tab==='preview')});
 $('updateBtn').onclick=async()=>{const btn=$('updateBtn');btn.disabled=true;btn.textContent='Salvando backup…';backupIde();await new Promise(r=>setTimeout(r,700));btn.textContent='Atualizando…';try{if('serviceWorker'in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update();}const url=new URL(location.href);url.searchParams.set('_v',Date.now());location.replace(url.toString())}catch(e){btn.disabled=false;btn.textContent='↻ Atualizar';toast('Não foi possível atualizar')}};
+
+// ===== GitHub v3 — token somente na sessão =====
+let ghToken=sessionStorage.getItem('brendaide_gh_token')||'';
+let ghUser=null,ghCurrentRepo='',ghCurrentBranch='main',ghCurrentPath='',ghCurrentSha='',ghCurrentDir='';
+const ghModal=$('githubModal'),commitModal=$('commitModal');
+function ghHeaders(){return {'Accept':'application/vnd.github+json','Authorization':'Bearer '+ghToken,'X-GitHub-Api-Version':'2026-03-10'}}
+async function ghApi(path,options={}){const res=await fetch('https://api.github.com'+path,{...options,headers:{...ghHeaders(),...(options.headers||{})}});if(!res.ok){let msg='GitHub: erro '+res.status;try{const j=await res.json();if(j.message)msg+=' — '+j.message}catch{}throw new Error(msg)}if(res.status===204)return null;return res.json()}
+function b64ToUtf8(b64){const bytes=Uint8Array.from(atob((b64||'').replace(/\n/g,'')),c=>c.charCodeAt(0));return new TextDecoder().decode(bytes)}
+function utf8ToB64(str){const bytes=new TextEncoder().encode(str);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(bin)}
+function ghSetConnected(on){$('githubConnectionForm').style.display=on?'none':'block';$('githubConnected').style.display=on?'block':'none';$('ghCancelRow').style.display=on?'none':'flex';$('commitBtn').disabled=!on||!ghCurrentPath}
+async function ghConnect(){ghToken=$('ghToken').value.trim();if(!ghToken){toast('Informe o token');return}$('ghConnect').disabled=true;$('ghConnect').textContent='Conectando…';try{ghUser=await ghApi('/user');sessionStorage.setItem('brendaide_gh_token',ghToken);$('ghUserLabel').textContent='@'+ghUser.login;await ghLoadRepos();ghSetConnected(true);toast('GitHub conectado')}catch(e){ghToken='';sessionStorage.removeItem('brendaide_gh_token');toast(e.message)}finally{$('ghConnect').disabled=false;$('ghConnect').textContent='Conectar'}}
+async function ghLoadRepos(){const repos=await ghApi('/user/repos?per_page=100&sort=updated&affiliation=owner,collaborator,organization_member');const sel=$('ghRepo');sel.innerHTML='';repos.filter(r=>r.permissions&&r.permissions.push).forEach(r=>{const o=document.createElement('option');o.value=r.full_name;o.textContent=r.full_name;o.dataset.branch=r.default_branch||'main';sel.appendChild(o)});if(sel.options.length){ghCurrentRepo=sel.value;ghCurrentBranch=sel.selectedOptions[0].dataset.branch;$('ghBranch').value=ghCurrentBranch;await ghBrowse('')}}
+async function ghBrowse(dir=''){if(!ghCurrentRepo)return;ghCurrentDir=dir;const branch=$('ghBranch').value.trim()||'main';ghCurrentBranch=branch;const data=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(dir)+'?ref='+encodeURIComponent(branch));const arr=Array.isArray(data)?data:[data];arr.sort((a,b)=>(a.type===b.type? a.name.localeCompare(b.name):a.type==='dir'?-1:1));const box=$('ghFiles');box.innerHTML='';arr.forEach(item=>{const row=document.createElement('div');row.className='file-row';row.innerHTML='<div class="file-ico">'+(item.type==='dir'?'📁':'📄')+'</div><div class="file-main"><b></b><small></small></div>';row.querySelector('b').textContent=item.name;row.querySelector('small').textContent=item.type==='dir'?'Pasta':(item.size||0).toLocaleString('pt-BR')+' bytes';row.onclick=()=>item.type==='dir'?ghBrowse(item.path):ghOpenFile(item);box.appendChild(row)});ghRenderBreadcrumb();}
+function ghRenderBreadcrumb(){const b=$('ghBreadcrumb');b.innerHTML='';const root=document.createElement('button');root.className='crumb';root.textContent='⌂ raiz';root.onclick=()=>ghBrowse('');b.appendChild(root);let acc='';ghCurrentDir.split('/').filter(Boolean).forEach(p=>{acc+=(acc?'/':'')+p;const btn=document.createElement('button');btn.className='crumb';btn.textContent='› '+p;const target=acc;btn.onclick=()=>ghBrowse(target);b.appendChild(btn)})}
+async function ghOpenFile(item){if(!/\.(html?|css|js|json|md|txt)$/i.test(item.name)){toast('Por segurança, a v3 abre arquivos de texto/código');return}try{const data=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(item.path)+'?ref='+encodeURIComponent(ghCurrentBranch));editor.value=b64ToUtf8(data.content);ghCurrentPath=item.path;ghCurrentSha=data.sha;setFileName(item.name);persist();render();$('commitBtn').disabled=false;ghModal.classList.remove('show');toast('Aberto do GitHub: '+item.name)}catch(e){toast(e.message)}}
+function ghOpenCommit(){if(!ghToken||!ghCurrentRepo||!ghCurrentPath){toast('Abra um arquivo do GitHub primeiro');return}$('commitRepo').textContent=ghCurrentRepo;$('commitBranch').textContent=ghCurrentBranch;$('commitPath').textContent=ghCurrentPath;$('commitMessage').value='Atualiza '+ghCurrentPath.split('/').pop();commitModal.classList.add('show')}
+async function ghCommit(){const msg=$('commitMessage').value.trim();if(!msg){toast('Digite a mensagem do commit');return}const btn=$('commitConfirm');btn.disabled=true;btn.textContent='Salvando backup…';backupIde();await new Promise(r=>setTimeout(r,650));btn.textContent='Commitando…';try{const body={message:msg,content:utf8ToB64(editor.value),branch:ghCurrentBranch};if(ghCurrentSha)body.sha=ghCurrentSha;const out=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(ghCurrentPath),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});ghCurrentSha=out.content.sha;commitModal.classList.remove('show');toast('Commit enviado com sucesso')}catch(e){toast(e.message)}finally{btn.disabled=false;btn.textContent='Backup + Commitar'}}
+$('githubBtn').onclick=async()=>{ghModal.classList.add('show');if(ghToken&&!ghUser){try{ghUser=await ghApi('/user');$('ghUserLabel').textContent='@'+ghUser.login;await ghLoadRepos();ghSetConnected(true)}catch{sessionStorage.removeItem('brendaide_gh_token');ghToken='';ghSetConnected(false)}}else ghSetConnected(!!ghToken)};
+$('ghConnect').onclick=ghConnect;$('ghCancel').onclick=()=>ghModal.classList.remove('show');$('ghClose').onclick=()=>ghModal.classList.remove('show');$('ghRefresh').onclick=()=>ghBrowse(ghCurrentDir);
+$('ghRepo').onchange=async()=>{ghCurrentRepo=$('ghRepo').value;ghCurrentBranch=$('ghRepo').selectedOptions[0]?.dataset.branch||'main';$('ghBranch').value=ghCurrentBranch;ghCurrentPath='';ghCurrentSha='';$('commitBtn').disabled=true;await ghBrowse('')};
+$('ghBranch').onchange=()=>{ghCurrentBranch=$('ghBranch').value.trim()||'main';ghCurrentPath='';ghCurrentSha='';$('commitBtn').disabled=true;ghBrowse('')};
+$('ghDisconnect').onclick=()=>{ghToken='';ghUser=null;ghCurrentRepo='';ghCurrentPath='';ghCurrentSha='';sessionStorage.removeItem('brendaide_gh_token');$('ghToken').value='';ghSetConnected(false);toast('GitHub desconectado')};
+$('commitBtn').onclick=ghOpenCommit;$('commitCancel').onclick=()=>commitModal.classList.remove('show');$('commitConfirm').onclick=ghCommit;
+
 window.addEventListener('beforeunload',persist);if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
 </body>

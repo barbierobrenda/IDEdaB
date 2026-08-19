@@ -1,9 +1,21 @@
 {
-  "name": "Brenda IDE — HTML Live",
+  "name": "Brenda IDE — Blue iPad Edition",
   "short_name": "Brenda IDE",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#071126",
-  "theme_color": "#0B1530",
-  "description": "IDE web azul para editar HTML e visualizar preview em tempo real no iPad."
+  "theme_color": "#0A2D68",
+  "description": "IDE web para HTML com preview em tempo real e integração opcional com GitHub.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }

@@ -1,22 +1,22 @@
-# Brenda IDE v2 — Blue iPad Edition
+# Brenda IDE v3 — Blue iPad Edition
 
-IDE web para editar HTML no iPad com preview em tempo real.
+## Novidades
+- Identidade azul e logo próprio (`brenda-ide-logo.jpg`).
+- Preview em tempo real para celular/tablet/desktop.
+- Autosave, busca, formatação, copiar código, backup e atualização com backup.
+- Integração opcional com GitHub: listar repositórios com permissão de push, navegar em pastas, abrir arquivos e commitar.
+- Backup local automático antes de cada commit.
+- Token fica somente em `sessionStorage`: fechar a aba encerra a sessão da IDE.
 
-## Recursos
-- Visual azul otimizado para iPad
-- Editor HTML + preview ao vivo
-- Autosave local
-- Abrir e salvar `.html`
-- Renomear o arquivo
-- Copiar código
-- Busca no código
-- Formatação simples de HTML
-- Preview em celular, tablet e desktop
-- Preview em nova aba/tela cheia
-- Contador de linhas e caracteres
-- Backup `.json` da IDE
-- Botão Atualizar que faz backup antes de atualizar o PWA
-- PWA instalável pela Tela de Início
+## Conectar ao GitHub com o mínimo de acesso
+Crie um **fine-grained personal access token** no GitHub:
+1. Restrinja o token somente ao repositório que deseja editar.
+2. Em Repository permissions, dê **Contents: Read and write**.
+3. Não conceda Administration, Actions ou outras permissões que a IDE não precisa.
+4. Na Brenda IDE, toque em **GitHub**, cole o token e conecte.
+5. Abra um arquivo do repositório, edite e toque em **Commitar**.
+
+A IDE não grava o token no código nem no `localStorage`; ele permanece somente na sessão da aba. Para uma publicação pública ainda mais robusta, o próximo passo recomendado é trocar PAT por uma GitHub App/OAuth com backend.
 
 ## GitHub Pages
-Envie `index.html`, `manifest.json` e `sw.js` para a raiz do repositório e habilite GitHub Pages em Settings → Pages.
+Envie todos os arquivos deste ZIP para um repositório e habilite Settings → Pages → Deploy from a branch → main / root.
