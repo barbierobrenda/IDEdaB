@@ -108,7 +108,7 @@
   <header>
     <div class="brand"><div class="logo"><img src="brenda-ide-logo.jpg" alt="Logo Brenda IDE"></div><div><div class="title">Brenda IDE</div><div class="sub" id="fileNameLabel">projeto.html • alterações só nesta sessão</div></div></div>
     <div class="top-actions">
-      <label class="btn" for="fileInput">Abrir</label><input id="fileInput" type="file" accept=".html,.htm,.css,.js,.mjs,.cjs,.json,.php,.phtml,.txt,.md,.sql,.xml,.svg,.yml,.yaml,.ini,.env,.bat,.cmd,.ps1,.py,.java,.c,.h,.cpp,.hpp,.pas,.dpr,.dfm,text/*,application/json,application/javascript,application/xml">
+      <label class="btn" for="fileInput">Abrir</label><input id="fileInput" type="file" accept=".html,.htm,.css,.js,.mjs,.cjs,.json,.php,.phtml,.txt,.md,.sql,.xml,.svg,.yml,.yaml,.ini,.env,.bat,.cmd,.ps1,.py,.java,.c,.h,.cpp,.hpp,.pas,.dpr,.dfm,text/*,application/json,application/javascript,application/xml"><label class="btn" for="folderInput">Pasta</label><input id="folderInput" type="file" webkitdirectory directory multiple style="display:none">
       <button class="btn desktop-only" id="newBtn">Novo</button>
       
       <button class="btn soft" id="githubBtn">◉ GitHub</button>
@@ -135,7 +135,7 @@
 
     <section class="pane" id="previewPane">
       <div class="pane-head"><div class="pane-title">Preview em tempo real</div><div class="preview-tools"><button class="btn icon" data-size="phone" title="Celular">▯</button><button class="btn icon" data-size="tablet" title="Tablet">▭</button><button class="btn icon" data-size="desktop" title="Desktop">▰</button><button class="btn" id="fullPreviewBtn">Tela cheia</button></div><div class="mobile-tabs"><button class="btn" data-tab="editor">Código</button><button class="btn primary" data-tab="preview">Preview</button></div></div>
-      <div class="preview-stage"><div class="preview-shell desktop" id="previewShell"><div class="preview-note" id="previewNote"><div><strong id="previewNoteTitle">Somente edição</strong><p id="previewNoteText">Este tipo de arquivo pode ser editado normalmente.</p></div></div><iframe id="preview" sandbox="allow-scripts allow-forms allow-modals allow-same-origin"></iframe></div></div>
+      <div class="preview-stage"><div class="preview-shell desktop" id="previewShell"><div class="preview-note" id="previewNote"><div><strong id="previewNoteTitle">Somente edição</strong><p id="previewNoteText">Este tipo de arquivo pode ser editado normalmente.</p></div></div><iframe id="preview" sandbox="allow-scripts allow-forms allow-modals"></iframe></div></div>
     </section>
   </main>
 
@@ -168,6 +168,14 @@
   <div class="row" id="ghCancelRow" style="margin-top:12px"><button class="btn" id="ghCancel">Cancelar</button></div>
 </div></div>
 
+
+<div class="modal" id="projectModal"><div class="card github-card">
+  <h3>Projeto local</h3>
+  <p id="projectInfo">Abra uma pasta completa para editar HTML, CSS, JS, PHP, imagens e outros arquivos juntos.</p>
+  <div class="github-breadcrumb" id="projectBreadcrumb"></div>
+  <div class="file-browser" id="projectFiles"></div>
+  <div class="github-actions"><button class="btn" id="projectClose">Fechar</button></div>
+</div></div>
 <div class="modal" id="commitModal"><div class="card github-card">
   <h3>Confirmar commit</h3>
   <p>O commit só será enviado quando você confirmar. Se quiser uma cópia local antes, use o botão Backup.</p>
@@ -180,24 +188,173 @@
 const $=id=>document.getElementById(id);
 const editor=$('editor'),preview=$('preview'),saveStatus=$('saveStatus'),fileNameLabel=$('fileNameLabel'),fileNameInput=$('fileNameInput'),charCount=$('charCount'),lineBadge=$('lineBadge'),fileInput=$('fileInput'),toastEl=$('toast'),previewShell=$('previewShell');
 let currentFileName='projeto.html',updateTimer;
+let projectFiles=new Map(),projectUrls=new Map(),projectCurrentPath='',projectRootName='';
+const folderInput=$('folderInput'),projectModal=$('projectModal');
+function normPath(s=''){const out=[];String(s).replace(/\\/g,'/').split('/').forEach(x=>{if(!x||x==='.')return;if(x==='..')out.pop();else out.push(x)});return out.join('/')}
+function dirname(path=''){const a=normPath(path).split('/');a.pop();return a.join('/')}
+function resolveProjectPath(base,rel){if(!rel||/^(data:|blob:|https?:|\/\/|#|mailto:|tel:|javascript:)/i.test(rel))return null;const clean=rel.split('#')[0].split('?')[0];return normPath((clean.startsWith('/')?'':dirname(base)+'/')+clean)}
+function revokeProjectUrls(){projectUrls.forEach(u=>URL.revokeObjectURL(u));projectUrls.clear()}
+function projectUrl(path){path=normPath(path);if(projectUrls.has(path))return projectUrls.get(path);const f=projectFiles.get(path);if(!f)return null;const u=URL.createObjectURL(f);projectUrls.set(path,u);return u}
+
 const starter=`<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>Meu projeto</title>\n  <style>\n    body {\n      font-family: Arial, sans-serif;\n      margin: 40px;\n    }\n  </style>\n</head>\n<body>\n  <h1>Olá 👋</h1>\n  <p>Edite o HTML e veja o resultado ao lado.</p>\n</body>\n</html>`;
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastEl._timer);toastEl._timer=setTimeout(()=>toastEl.classList.remove('show'),1900)}
 function setFileName(name){currentFileName=(name||'projeto.html').trim();if(!/\.[a-z0-9]+$/i.test(currentFileName))currentFileName+='.html';fileNameLabel.textContent=currentFileName+' • alterações só nesta sessão';fileNameInput.value=currentFileName;updateLanguageUI()}
 function getExtension(name=''){const m=String(name).toLowerCase().match(/\.([a-z0-9]+)$/);return m?m[1]:''}
 function languageName(ext){const map={html:'HTML',htm:'HTML',css:'CSS',js:'JS',mjs:'JS',cjs:'JS',json:'JSON',php:'PHP',phtml:'PHP',txt:'TXT',md:'MD',sql:'SQL',xml:'XML',svg:'SVG',yml:'YAML',yaml:'YAML',ini:'INI',env:'ENV',bat:'BAT',cmd:'CMD',ps1:'PS1',py:'PY',java:'JAVA',c:'C',h:'C',cpp:'C++',hpp:'C++',pas:'PAS',dpr:'DPR',dfm:'DFM'};return map[ext]||ext.toUpperCase()||'TXT'}
 function updateLanguageUI(){const b=$('langBadge');if(b)b.textContent=languageName(getExtension(currentFileName))}
-function previewMode(){const e=getExtension(currentFileName);if(['html','htm'].includes(e))return'html';if(e==='css')return'css';if(['js','mjs','cjs'].includes(e))return'js';if(e==='svg')return'svg';return'none'}
-function buildPreview(){const mode=previewMode(),code=editor.value;if(mode==='html'||mode==='svg')return code;if(mode==='css')return `<!doctype html><html><head><meta charset="utf-8"><style>${code}</style></head><body><main><h1>Preview CSS</h1><p>Texto de exemplo para visualizar o estilo.</p><button>Botão</button></main></body></html>`;if(mode==='js')return `<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:system-ui;padding:28px}pre{white-space:pre-wrap;color:#b42318}</style></head><body><h2>Preview JavaScript</h2><div id="app"></div><script>try{${code}\n}catch(e){document.body.insertAdjacentHTML('beforeend','<pre>'+String(e.stack||e).replace(/</g,'&lt;')+'</pre>')}<\\/script></body></html>`;return''}
+
+function detectModeByContent(){
+  const s=editor.value.slice(0,4000);
+  if(/<!doctype\s+html|<html[\s>]|<head[\s>]|<body[\s>]/i.test(s))return'html';
+  if(/<\?(?:php|=)/i.test(s))return'php';
+  return null;
+}
+function rewriteProjectRefs(doc,currentPath){
+  if(!projectFiles.size)return doc;
+  const attrRe=/\b(src|href)=([\"'])([^\"']+)\2/gi;
+  doc=doc.replace(attrRe,(all,attr,q,val)=>{
+    const path=resolveProjectPath(currentPath,val),u=path&&projectUrl(path);
+    return u?`${attr}=${q}${u}${q}`:all;
+  });
+  doc=doc.replace(/url\(\s*(['\"]?)([^)'\"\s]+)\1\s*\)/gi,(all,q,val)=>{
+    const path=resolveProjectPath(currentPath,val),u=path&&projectUrl(path);
+    return u?`url("${u}")`:all;
+  });
+  return doc;
+}
+function previewMode(){const e=getExtension(currentFileName),byContent=detectModeByContent();if(byContent)return byContent;if(['html','htm'].includes(e))return'html';if(e==='css')return'css';if(['js','mjs','cjs'].includes(e))return'js';if(['php','phtml'].includes(e))return'php';if(e==='svg')return'svg';return'none'}
+function buildPreview(){
+  const mode=previewMode(),code=editor.value;
+  if(mode==='html')return rewriteProjectRefs(code,projectCurrentPath);if(mode==='svg')return code;
+  if(mode==='css')return `<!doctype html><html><head><meta charset="utf-8"><style>${code}</style></head><body><main><h1>Preview CSS</h1><p>Texto de exemplo para visualizar o estilo.</p><button>Botão</button></main></body></html>`;
+  if(mode==='php'){
+    let phpCount=0;
+    let visual=code.replace(/<\?(?:php|=)?[\s\S]*?\?>/gi,()=>{
+      phpCount++;
+      return `<span class="php-placeholder" title="Bloco PHP não executado">PHP</span>`;
+    });
+    const hasDoc=/<!doctype|<html[\s>]/i.test(visual);
+    const banner=`<div id="brendaPhpBanner" style="position:fixed;left:12px;right:12px;bottom:12px;z-index:2147483647;background:#07172e;color:#eaf3ff;border:1px solid #25548b;border-radius:10px;padding:9px 12px;font:12px/1.4 system-ui,-apple-system,sans-serif;box-shadow:0 8px 25px rgba(0,0,0,.18)"><b style="color:#74b9ff">Preview PHP visual</b> · ${phpCount} bloco(s) PHP não executado(s). HTML, CSS e JavaScript são renderizados normalmente.</div>`;
+    const placeholderCss=`<style>.php-placeholder{display:inline-flex;align-items:center;justify-content:center;padding:2px 6px;margin:0 2px;border:1px dashed #3d8df5;border-radius:5px;background:#eaf4ff;color:#1563bf;font:700 10px system-ui;vertical-align:middle}</style>`;
+    if(hasDoc){
+      if(/<\/head>/i.test(visual)) visual=visual.replace(/<\/head>/i,placeholderCss+'</head>');
+      else visual=placeholderCss+visual;
+      if(/<\/body>/i.test(visual)) visual=visual.replace(/<\/body>/i,banner+'</body>');
+      else visual+=banner;
+      return visual;
+    }
+    return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${placeholderCss}</head><body>${visual}${banner}</body></html>`;
+  }
+  if(mode==='js'){
+    const encoded=btoa(unescape(encodeURIComponent(code)));
+    return `<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff;color:#152033}
+  body{padding:18px 18px 180px}
+  .js-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:12px;border-bottom:1px solid #e4e9f0;margin-bottom:16px}
+  .js-head strong{font-size:15px}
+  .js-head small{font-size:11px;color:#748198}
+  #app{min-height:170px}
+  #console{position:fixed;left:0;right:0;bottom:0;height:155px;background:#081426;color:#dce9ff;border-top:1px solid #203b61;overflow:auto;padding:8px 12px;font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .console-title{position:sticky;top:-8px;background:#081426;padding:6px 0 7px;color:#80b7ff;font-family:system-ui;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  .log{padding:2px 0;white-space:pre-wrap;word-break:break-word}.warn{color:#ffd479}.error{color:#ff8c8c}.info{color:#8fc8ff}
+  .empty{color:#71839e;font-style:italic}
+</style>
+</head>
+<body>
+  <div class="js-head"><strong>Preview JavaScript</strong><small>Área visual + console</small></div>
+  <div id="app"></div>
+  <div id="console"><div class="console-title">Console</div><div id="consoleLines"><div class="empty">Execute console.log(...) ou altere o DOM.</div></div></div>
+<script>
+(function(){
+  const out=document.getElementById('consoleLines');
+  let used=false;
+  function safe(v){
+    if(typeof v==='string')return v;
+    try{return JSON.stringify(v,null,2)}catch(e){return String(v)}
+  }
+  function write(type,args){
+    if(!used){out.innerHTML='';used=true}
+    const d=document.createElement('div');
+    d.className='log '+type;
+    d.textContent=args.map(safe).join(' ');
+    out.appendChild(d);
+    out.parentElement.scrollTop=out.parentElement.scrollHeight;
+  }
+  ['log','info','warn','error'].forEach(type=>{
+    const original=console[type];
+    console[type]=function(...args){write(type,args);try{original.apply(console,args)}catch(e){}};
+  });
+  window.onerror=function(msg,src,line,col,err){
+    write('error',[err&&err.stack?err.stack:msg+' (linha '+line+')']);
+    return true;
+  };
+  window.onunhandledrejection=function(e){
+    write('error',['Promise rejeitada:',e.reason&&e.reason.stack?e.reason.stack:e.reason]);
+  };
+  try{
+    const source=decodeURIComponent(escape(atob('${encoded}')));
+    (0,eval)(source);
+  }catch(e){
+    write('error',[e.stack||String(e)]);
+  }
+})();
+<\/script>
+</body>
+</html>`;
+  }
+  return'';
+})();
+<\/script>
+</body>
+</html>`;
+  }
+  return'';
+}
 function stats(){charCount.textContent=editor.value.length.toLocaleString('pt-BR')+' caracteres';const lines=editor.value.split('\n').length;lineBadge.textContent=lines+(lines===1?' linha':' linhas')}
-function render(){updateLanguageUI();const mode=previewMode(),note=$('previewNote');if(mode==='none'){preview.style.display='none';note.classList.add('show');$('previewNoteTitle').textContent=languageName(getExtension(currentFileName))+' — somente edição';$('previewNoteText').textContent='Você pode editar, buscar, copiar, baixar backup e commitar este arquivo. PHP e outras linguagens de servidor precisam de um servidor próprio para executar.'}else{note.classList.remove('show');preview.style.display='block';preview.srcdoc=buildPreview()}stats()}
+function render(){updateLanguageUI();const mode=previewMode(),note=$('previewNote');if(mode==='none'){preview.style.display='none';note.classList.add('show');$('previewNoteTitle').textContent=languageName(getExtension(currentFileName))+' — somente edição';$('previewNoteText').textContent='Você pode editar, buscar, copiar, baixar backup e commitar este arquivo. Linguagens de servidor precisam de um servidor próprio para execução real.'}else{note.classList.remove('show');preview.style.display='block';preview.srcdoc=buildPreview()}stats()}
 function scheduleUpdate(){saveStatus.textContent='somente na IDE';clearTimeout(updateTimer);updateTimer=setTimeout(()=>{render()},180)}
 function download(content,name,type='text/html;charset=utf-8'){const blob=new Blob([content],{type});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200)}
-function backupIde(){setFileName(fileNameInput.value);const backup={app:'Brenda IDE',version:'3.4',date:new Date().toISOString(),filename:currentFileName,code:editor.value};const stamp=new Date().toISOString().replace(/[:.]/g,'-');download(JSON.stringify(backup,null,2),'BrendaIDE_Backup_'+stamp+'.json','application/json');saveStatus.textContent='backup baixado';toast('Backup baixado')}
+function backupIde(){setFileName(fileNameInput.value);const backup={app:'Brenda IDE',version:'3.7',date:new Date().toISOString(),filename:currentFileName,code:editor.value};const stamp=new Date().toISOString().replace(/[:.]/g,'-');download(JSON.stringify(backup,null,2),'BrendaIDE_Backup_'+stamp+'.json','application/json');saveStatus.textContent='backup baixado';toast('Backup baixado')}
 function simpleFormatHTML(src){let out='',indent=0;const tokens=src.replace(/>\s*</g,'>\n<').split('\n');const voidTag=/^<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)\b/i;tokens.forEach(raw=>{const s=raw.trim();if(!s)return;if(/^<\//.test(s))indent=Math.max(0,indent-1);out+='  '.repeat(indent)+s+'\n';if(/^<[^!/][^>]*>/.test(s)&&!/^<\//.test(s)&&!voidTag.test(s)&&!/>.*<\//.test(s)&&!/<\/$/.test(s)&&!s.endsWith('/>'))indent++});return out.trimEnd()}
 const tempUpdate=sessionStorage.getItem('brendaide_update_temp');if(tempUpdate){try{const t=JSON.parse(tempUpdate);editor.value=t.code||starter;currentFileName=t.filename||'projeto.html'}catch{editor.value=starter}sessionStorage.removeItem('brendaide_update_temp')}else{editor.value=starter}setFileName(currentFileName);render();
 editor.addEventListener('input',scheduleUpdate);fileNameInput.addEventListener('change',()=>setFileName(fileNameInput.value));
 editor.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();editor.setRangeText('  ',editor.selectionStart,editor.selectionEnd,'end');scheduleUpdate()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();backupIde()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='f'){e.preventDefault();$('searchInput').focus()}});
-fileInput.addEventListener('change',async()=>{const file=fileInput.files?.[0];if(!file)return;editor.value=await file.text();setFileName(file.name);saveStatus.textContent='somente na IDE';render();toast('Arquivo aberto');fileInput.value=''});
+
+function projectDisplayPath(file){
+  let path=file.webkitRelativePath||file.name;
+  const parts=path.replace(/\\/g,'/').split('/');
+  if(parts.length>1){projectRootName=parts.shift();path=parts.join('/')}
+  return normPath(path);
+}
+function renderProjectBrowser(){
+  const box=$('projectFiles');box.innerHTML='';
+  const paths=[...projectFiles.keys()].sort((a,b)=>a.localeCompare(b));
+  paths.forEach(path=>{
+    const f=projectFiles.get(path),row=document.createElement('div');row.className='file-row';
+    row.innerHTML='<div class="file-ico">📄</div><div class="file-main"><b></b><small></small></div>';
+    row.querySelector('b').textContent=path;row.querySelector('small').textContent=(f.size||0).toLocaleString('pt-BR')+' bytes';
+    row.onclick=()=>openProjectFile(path);box.appendChild(row);
+  });
+  $('projectInfo').textContent=(projectRootName||'Projeto')+' • '+paths.length+' arquivos';
+}
+async function openProjectFile(path){
+  const f=projectFiles.get(path);if(!f)return;
+  if(!/\.(html?|css|m?js|cjs|json|php|phtml|md|txt|sql|xml|svg|ya?ml|ini|env|bat|cmd|ps1|py|java|c|h|cpp|hpp|pas|dpr|dfm)$/i.test(f.name)){toast('Arquivo disponível para o preview, mas não para edição de texto');return}
+  editor.value=await f.text();projectCurrentPath=path;setFileName(f.name);saveStatus.textContent='somente na IDE';render();projectModal.classList.remove('show');toast('Aberto: '+path)
+}
+folderInput.addEventListener('change',()=>{
+  revokeProjectUrls();projectFiles.clear();projectRootName='';
+  [...folderInput.files].forEach(f=>projectFiles.set(projectDisplayPath(f),f));
+  renderProjectBrowser();projectModal.classList.add('show');toast('Pasta carregada: '+projectFiles.size+' arquivos')
+});
+$('projectClose').onclick=()=>projectModal.classList.remove('show');
+fileInput.addEventListener('change',async()=>{const file=fileInput.files?.[0];if(!file)return;editor.value=await file.text();projectCurrentPath='';setFileName(file.name);saveStatus.textContent='somente na IDE';render();toast('Arquivo aberto');fileInput.value=''});
 $('backupBtn').onclick=backupIde;
 $('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(editor.value);toast('Código copiado')}catch{editor.select();document.execCommand('copy');toast('Código copiado')}};
 $('formatBtn').onclick=()=>{if(!['html','htm'].includes(getExtension(currentFileName))){toast('Formatar automático está disponível para HTML');return}editor.value=simpleFormatHTML(editor.value);saveStatus.textContent='somente na IDE';render();toast('HTML formatado')};
@@ -237,7 +394,7 @@ $('railCode').onclick=()=>{editor.focus();toast('Editor')};
 $('railFiles').onclick=()=>fileInput.click();
 $('railSearch').onclick=()=>{$('searchInput').focus();toast('Buscar no código')};
 $('railSettings').onclick=()=>toast('Configurações: em breve');
-$('railInfo').onclick=()=>toast('Brenda IDE v3.4 • Multi-linguagem');
+$('railInfo').onclick=()=>toast('Brenda IDE v3.7 • Multi-linguagem');
 
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
