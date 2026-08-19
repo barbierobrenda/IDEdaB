@@ -1,0 +1,9 @@
+{
+  "name": "Brenda IDE — HTML Live",
+  "short_name": "Brenda IDE",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0f1715",
+  "theme_color": "#0f1715",
+  "description": "IDE web simples para editar HTML e visualizar o preview em tempo real."
+}
