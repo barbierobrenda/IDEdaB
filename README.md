@@ -20,3 +20,10 @@ A IDE não grava o token no código nem no `localStorage`; ele permanece somente
 
 ## GitHub Pages
 Envie todos os arquivos deste ZIP para um repositório e habilite Settings → Pages → Deploy from a branch → main / root.
+
+
+## v3.1 — edição sem autosave
+- O editor e o preview atualizam em tempo real, mas o código não é salvo automaticamente.
+- O botão Atualizar não baixa backup nem salva o arquivo; ele só preserva temporariamente o conteúdo durante a recarga da IDE.
+- O backup local só é baixado quando o usuário toca em Backup (ou Cmd/Ctrl+S).
+- Commitar no GitHub continua sendo uma ação explícita e não gera backup automático.

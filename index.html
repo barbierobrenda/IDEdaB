@@ -55,11 +55,11 @@
 <body>
 <div class="app">
   <header>
-    <div class="brand"><div class="logo"><img src="brenda-ide-logo.jpg" alt="Logo Brenda IDE"></div><div><div class="title">Brenda IDE</div><div class="sub" id="fileNameLabel">projeto.html • autosave ativo</div></div></div>
+    <div class="brand"><div class="logo"><img src="brenda-ide-logo.jpg" alt="Logo Brenda IDE"></div><div><div class="title">Brenda IDE</div><div class="sub" id="fileNameLabel">projeto.html • alterações só nesta sessão</div></div></div>
     <div class="top-actions">
       <label class="btn" for="fileInput">Abrir</label><input id="fileInput" type="file" accept=".html,.htm,text/html">
       <button class="btn desktop-only" id="newBtn">Novo</button>
-      <button class="btn primary" id="downloadBtn">Salvar</button>
+      
       <button class="btn soft" id="githubBtn">◉ GitHub</button>
       <button class="btn soft" id="updateBtn">↻ Atualizar</button>
     </div>
@@ -78,7 +78,7 @@
 
   <main class="workspace">
     <section class="pane active" id="editorPane">
-      <div class="pane-head"><div class="pane-title">HTML</div><div class="mobile-tabs"><button class="btn primary" data-tab="editor">Código</button><button class="btn" data-tab="preview">Preview</button></div><div class="status" id="saveStatus">salvo</div></div>
+      <div class="pane-head"><div class="pane-title">HTML</div><div class="mobile-tabs"><button class="btn primary" data-tab="editor">Código</button><button class="btn" data-tab="preview">Preview</button></div><div class="status" id="saveStatus">não salvo</div></div>
       <div class="editor-wrap"><textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea><div class="line-badge" id="lineBadge">1 linha</div></div>
     </section>
 
@@ -91,7 +91,7 @@
   <footer><span>⌘/Ctrl + S salva • ⌘/Ctrl + F busca</span><span id="charCount">0 caracteres</span></footer>
 </div>
 <div class="toast" id="toast"></div>
-<div class="modal" id="newModal"><div class="card"><h3>Novo arquivo</h3><p>O conteúdo atual continuará salvo no backup local da IDE, mas o editor será substituído por um HTML novo.</p><div class="row"><button class="btn" id="cancelNew">Cancelar</button><button class="btn danger" id="confirmNew">Criar novo</button></div></div></div>
+<div class="modal" id="newModal"><div class="card"><h3>Novo arquivo</h3><p>O editor será substituído por um HTML novo. Nada será salvo automaticamente.</p><div class="row"><button class="btn" id="cancelNew">Cancelar</button><button class="btn danger" id="confirmNew">Criar novo</button></div></div></div>
 <div class="modal" id="githubModal"><div class="card github-card">
   <h3>GitHub</h3>
   <div id="githubConnectionForm">
@@ -116,41 +116,39 @@
 
 <div class="modal" id="commitModal"><div class="card github-card">
   <h3>Confirmar commit</h3>
-  <p>Antes de enviar, a IDE baixará um backup local do arquivo atual.</p>
+  <p>O commit só será enviado quando você confirmar. Se quiser uma cópia local antes, use o botão Backup.</p>
   <div class="commit-summary">Repositório: <code id="commitRepo">—</code><br>Branch: <code id="commitBranch">—</code><br>Arquivo: <code id="commitPath">—</code></div>
   <div class="github-field full"><label>Mensagem do commit</label><input id="commitMessage" placeholder="Ex.: Ajusta tela inicial do Dental Tech"></div>
   <div class="security-note">Somente uma conta/token com permissão de escrita nesse repositório consegue concluir este commit.</div>
-  <div class="row" style="margin-top:12px"><button class="btn" id="commitCancel">Cancelar</button><button class="btn primary" id="commitConfirm">Backup + Commitar</button></div>
+  <div class="row" style="margin-top:12px"><button class="btn" id="commitCancel">Cancelar</button><button class="btn primary" id="commitConfirm">Commitar</button></div>
 </div></div>
 <script>
 const $=id=>document.getElementById(id);
 const editor=$('editor'),preview=$('preview'),saveStatus=$('saveStatus'),fileNameLabel=$('fileNameLabel'),fileNameInput=$('fileNameInput'),charCount=$('charCount'),lineBadge=$('lineBadge'),fileInput=$('fileInput'),toastEl=$('toast'),previewShell=$('previewShell');
-let currentFileName=localStorage.getItem('brendaide_filename')||'projeto.html',updateTimer;
+let currentFileName='projeto.html',updateTimer;
 const starter=`<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>Meu projeto</title>\n  <style>\n    body {\n      font-family: Arial, sans-serif;\n      margin: 40px;\n    }\n  </style>\n</head>\n<body>\n  <h1>Olá 👋</h1>\n  <p>Edite o HTML e veja o resultado ao lado.</p>\n</body>\n</html>`;
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastEl._timer);toastEl._timer=setTimeout(()=>toastEl.classList.remove('show'),1900)}
-function setFileName(name){currentFileName=(name||'projeto.html').trim();if(!/\.html?$/i.test(currentFileName))currentFileName+='.html';localStorage.setItem('brendaide_filename',currentFileName);fileNameLabel.textContent=currentFileName+' • autosave ativo';fileNameInput.value=currentFileName}
+function setFileName(name){currentFileName=(name||'projeto.html').trim();if(!/\.html?$/i.test(currentFileName))currentFileName+='.html';fileNameLabel.textContent=currentFileName+' • alterações só nesta sessão';fileNameInput.value=currentFileName}
 function stats(){charCount.textContent=editor.value.length.toLocaleString('pt-BR')+' caracteres';const lines=editor.value.split('\n').length;lineBadge.textContent=lines+(lines===1?' linha':' linhas')}
 function render(){preview.srcdoc=editor.value;stats()}
-function persist(){localStorage.setItem('brendaide_code',editor.value);localStorage.setItem('brendaide_lastsave',new Date().toISOString());saveStatus.textContent='salvo'}
-function scheduleUpdate(){saveStatus.textContent='salvando…';clearTimeout(updateTimer);updateTimer=setTimeout(()=>{persist();render()},180)}
+function scheduleUpdate(){saveStatus.textContent='somente na IDE';clearTimeout(updateTimer);updateTimer=setTimeout(()=>{render()},180)}
 function download(content,name,type='text/html;charset=utf-8'){const blob=new Blob([content],{type});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200)}
-function downloadHtml(){setFileName(fileNameInput.value);persist();download(editor.value,currentFileName);toast('HTML salvo')}
-function backupIde(){const backup={app:'Brenda IDE',version:3,date:new Date().toISOString(),filename:currentFileName,code:editor.value};const stamp=new Date().toISOString().replace(/[:.]/g,'-');download(JSON.stringify(backup,null,2),'BrendaIDE_Backup_'+stamp+'.json','application/json');toast('Backup da IDE salvo')}
+function backupIde(){setFileName(fileNameInput.value);const backup={app:'Brenda IDE',version:'3.1',date:new Date().toISOString(),filename:currentFileName,code:editor.value};const stamp=new Date().toISOString().replace(/[:.]/g,'-');download(JSON.stringify(backup,null,2),'BrendaIDE_Backup_'+stamp+'.json','application/json');saveStatus.textContent='backup baixado';toast('Backup baixado')}
 function simpleFormatHTML(src){let out='',indent=0;const tokens=src.replace(/>\s*</g,'>\n<').split('\n');const voidTag=/^<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)\b/i;tokens.forEach(raw=>{const s=raw.trim();if(!s)return;if(/^<\//.test(s))indent=Math.max(0,indent-1);out+='  '.repeat(indent)+s+'\n';if(/^<[^!/][^>]*>/.test(s)&&!/^<\//.test(s)&&!voidTag.test(s)&&!/>.*<\//.test(s)&&!/<\/$/.test(s)&&!s.endsWith('/>'))indent++});return out.trimEnd()}
-editor.value=localStorage.getItem('brendaide_code')||starter;setFileName(currentFileName);render();
+const tempUpdate=sessionStorage.getItem('brendaide_update_temp');if(tempUpdate){try{const t=JSON.parse(tempUpdate);editor.value=t.code||starter;currentFileName=t.filename||'projeto.html'}catch{editor.value=starter}sessionStorage.removeItem('brendaide_update_temp')}else{editor.value=starter}setFileName(currentFileName);render();
 editor.addEventListener('input',scheduleUpdate);fileNameInput.addEventListener('change',()=>setFileName(fileNameInput.value));
-editor.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();editor.setRangeText('  ',editor.selectionStart,editor.selectionEnd,'end');scheduleUpdate()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();downloadHtml()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='f'){e.preventDefault();$('searchInput').focus()}});
-fileInput.addEventListener('change',async()=>{const file=fileInput.files?.[0];if(!file)return;editor.value=await file.text();setFileName(file.name);persist();render();toast('Arquivo aberto');fileInput.value=''});
-$('downloadBtn').onclick=downloadHtml;$('backupBtn').onclick=backupIde;
+editor.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();editor.setRangeText('  ',editor.selectionStart,editor.selectionEnd,'end');scheduleUpdate()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();backupIde()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='f'){e.preventDefault();$('searchInput').focus()}});
+fileInput.addEventListener('change',async()=>{const file=fileInput.files?.[0];if(!file)return;editor.value=await file.text();setFileName(file.name);saveStatus.textContent='somente na IDE';render();toast('Arquivo aberto');fileInput.value=''});
+$('backupBtn').onclick=backupIde;
 $('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(editor.value);toast('Código copiado')}catch{editor.select();document.execCommand('copy');toast('Código copiado')}};
-$('formatBtn').onclick=()=>{editor.value=simpleFormatHTML(editor.value);persist();render();toast('HTML formatado')};
+$('formatBtn').onclick=()=>{editor.value=simpleFormatHTML(editor.value);saveStatus.textContent='somente na IDE';render();toast('HTML formatado')};
 $('findBtn').onclick=()=>{const q=$('searchInput').value;if(!q)return;const start=editor.selectionEnd||0;let i=editor.value.toLowerCase().indexOf(q.toLowerCase(),start);if(i<0)i=editor.value.toLowerCase().indexOf(q.toLowerCase());if(i>=0){editor.focus();editor.setSelectionRange(i,i+q.length);toast('Encontrado')}else toast('Não encontrado')};
 $('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('findBtn').click()});
 $('fullPreviewBtn').onclick=()=>{const blob=new Blob([editor.value],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),win=window.open(url,'_blank');if(!win)toast('Permita pop-ups para o preview');setTimeout(()=>URL.revokeObjectURL(url),60000)};
 document.querySelectorAll('[data-size]').forEach(b=>b.onclick=()=>{previewShell.className='preview-shell '+b.dataset.size;toast('Preview: '+({phone:'celular',tablet:'tablet',desktop:'desktop'}[b.dataset.size]))});
-const newModal=$('newModal');$('newBtn').onclick=()=>newModal.classList.add('show');$('cancelNew').onclick=()=>newModal.classList.remove('show');$('confirmNew').onclick=()=>{backupIde();editor.value=starter;setFileName('projeto.html');persist();render();newModal.classList.remove('show');toast('Novo arquivo criado')};
+const newModal=$('newModal');$('newBtn').onclick=()=>newModal.classList.add('show');$('cancelNew').onclick=()=>newModal.classList.remove('show');$('confirmNew').onclick=()=>{editor.value=starter;setFileName('projeto.html');saveStatus.textContent='somente na IDE';render();newModal.classList.remove('show');toast('Novo arquivo criado')};
 document.querySelectorAll('[data-tab]').forEach(btn=>btn.onclick=()=>{const tab=btn.dataset.tab;$('editorPane').classList.toggle('active',tab==='editor');$('previewPane').classList.toggle('active',tab==='preview')});
-$('updateBtn').onclick=async()=>{const btn=$('updateBtn');btn.disabled=true;btn.textContent='Salvando backup…';backupIde();await new Promise(r=>setTimeout(r,700));btn.textContent='Atualizando…';try{if('serviceWorker'in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update();}const url=new URL(location.href);url.searchParams.set('_v',Date.now());location.replace(url.toString())}catch(e){btn.disabled=false;btn.textContent='↻ Atualizar';toast('Não foi possível atualizar')}};
+$('updateBtn').onclick=async()=>{const btn=$('updateBtn');btn.disabled=true;btn.textContent='Atualizando…';try{sessionStorage.setItem('brendaide_update_temp',JSON.stringify({filename:currentFileName,code:editor.value}));if('serviceWorker'in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update();}const url=new URL(location.href);url.searchParams.set('_v',Date.now());location.replace(url.toString())}catch(e){sessionStorage.removeItem('brendaide_update_temp');btn.disabled=false;btn.textContent='↻ Atualizar';toast('Não foi possível atualizar')}};
 
 // ===== GitHub v3 — token somente na sessão =====
 let ghToken=sessionStorage.getItem('brendaide_gh_token')||'';
@@ -165,9 +163,9 @@ async function ghConnect(){ghToken=$('ghToken').value.trim();if(!ghToken){toast(
 async function ghLoadRepos(){const repos=await ghApi('/user/repos?per_page=100&sort=updated&affiliation=owner,collaborator,organization_member');const sel=$('ghRepo');sel.innerHTML='';repos.filter(r=>r.permissions&&r.permissions.push).forEach(r=>{const o=document.createElement('option');o.value=r.full_name;o.textContent=r.full_name;o.dataset.branch=r.default_branch||'main';sel.appendChild(o)});if(sel.options.length){ghCurrentRepo=sel.value;ghCurrentBranch=sel.selectedOptions[0].dataset.branch;$('ghBranch').value=ghCurrentBranch;await ghBrowse('')}}
 async function ghBrowse(dir=''){if(!ghCurrentRepo)return;ghCurrentDir=dir;const branch=$('ghBranch').value.trim()||'main';ghCurrentBranch=branch;const data=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(dir)+'?ref='+encodeURIComponent(branch));const arr=Array.isArray(data)?data:[data];arr.sort((a,b)=>(a.type===b.type? a.name.localeCompare(b.name):a.type==='dir'?-1:1));const box=$('ghFiles');box.innerHTML='';arr.forEach(item=>{const row=document.createElement('div');row.className='file-row';row.innerHTML='<div class="file-ico">'+(item.type==='dir'?'📁':'📄')+'</div><div class="file-main"><b></b><small></small></div>';row.querySelector('b').textContent=item.name;row.querySelector('small').textContent=item.type==='dir'?'Pasta':(item.size||0).toLocaleString('pt-BR')+' bytes';row.onclick=()=>item.type==='dir'?ghBrowse(item.path):ghOpenFile(item);box.appendChild(row)});ghRenderBreadcrumb();}
 function ghRenderBreadcrumb(){const b=$('ghBreadcrumb');b.innerHTML='';const root=document.createElement('button');root.className='crumb';root.textContent='⌂ raiz';root.onclick=()=>ghBrowse('');b.appendChild(root);let acc='';ghCurrentDir.split('/').filter(Boolean).forEach(p=>{acc+=(acc?'/':'')+p;const btn=document.createElement('button');btn.className='crumb';btn.textContent='› '+p;const target=acc;btn.onclick=()=>ghBrowse(target);b.appendChild(btn)})}
-async function ghOpenFile(item){if(!/\.(html?|css|js|json|md|txt)$/i.test(item.name)){toast('Por segurança, a v3 abre arquivos de texto/código');return}try{const data=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(item.path)+'?ref='+encodeURIComponent(ghCurrentBranch));editor.value=b64ToUtf8(data.content);ghCurrentPath=item.path;ghCurrentSha=data.sha;setFileName(item.name);persist();render();$('commitBtn').disabled=false;ghModal.classList.remove('show');toast('Aberto do GitHub: '+item.name)}catch(e){toast(e.message)}}
+async function ghOpenFile(item){if(!/\.(html?|css|js|json|md|txt)$/i.test(item.name)){toast('Por segurança, a v3 abre arquivos de texto/código');return}try{const data=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(item.path)+'?ref='+encodeURIComponent(ghCurrentBranch));editor.value=b64ToUtf8(data.content);ghCurrentPath=item.path;ghCurrentSha=data.sha;setFileName(item.name);saveStatus.textContent='somente na IDE';render();$('commitBtn').disabled=false;ghModal.classList.remove('show');toast('Aberto do GitHub: '+item.name)}catch(e){toast(e.message)}}
 function ghOpenCommit(){if(!ghToken||!ghCurrentRepo||!ghCurrentPath){toast('Abra um arquivo do GitHub primeiro');return}$('commitRepo').textContent=ghCurrentRepo;$('commitBranch').textContent=ghCurrentBranch;$('commitPath').textContent=ghCurrentPath;$('commitMessage').value='Atualiza '+ghCurrentPath.split('/').pop();commitModal.classList.add('show')}
-async function ghCommit(){const msg=$('commitMessage').value.trim();if(!msg){toast('Digite a mensagem do commit');return}const btn=$('commitConfirm');btn.disabled=true;btn.textContent='Salvando backup…';backupIde();await new Promise(r=>setTimeout(r,650));btn.textContent='Commitando…';try{const body={message:msg,content:utf8ToB64(editor.value),branch:ghCurrentBranch};if(ghCurrentSha)body.sha=ghCurrentSha;const out=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(ghCurrentPath),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});ghCurrentSha=out.content.sha;commitModal.classList.remove('show');toast('Commit enviado com sucesso')}catch(e){toast(e.message)}finally{btn.disabled=false;btn.textContent='Backup + Commitar'}}
+async function ghCommit(){const msg=$('commitMessage').value.trim();if(!msg){toast('Digite a mensagem do commit');return}const btn=$('commitConfirm');btn.disabled=true;btn.textContent='Commitando…';try{const body={message:msg,content:utf8ToB64(editor.value),branch:ghCurrentBranch};if(ghCurrentSha)body.sha=ghCurrentSha;const out=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(ghCurrentPath),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});ghCurrentSha=out.content.sha;commitModal.classList.remove('show');toast('Commit enviado com sucesso')}catch(e){toast(e.message)}finally{btn.disabled=false;btn.textContent='Commitar'}}
 $('githubBtn').onclick=async()=>{ghModal.classList.add('show');if(ghToken&&!ghUser){try{ghUser=await ghApi('/user');$('ghUserLabel').textContent='@'+ghUser.login;await ghLoadRepos();ghSetConnected(true)}catch{sessionStorage.removeItem('brendaide_gh_token');ghToken='';ghSetConnected(false)}}else ghSetConnected(!!ghToken)};
 $('ghConnect').onclick=ghConnect;$('ghCancel').onclick=()=>ghModal.classList.remove('show');$('ghClose').onclick=()=>ghModal.classList.remove('show');$('ghRefresh').onclick=()=>ghBrowse(ghCurrentDir);
 $('ghRepo').onchange=async()=>{ghCurrentRepo=$('ghRepo').value;ghCurrentBranch=$('ghRepo').selectedOptions[0]?.dataset.branch||'main';$('ghBranch').value=ghCurrentBranch;ghCurrentPath='';ghCurrentSha='';$('commitBtn').disabled=true;await ghBrowse('')};
@@ -175,7 +173,7 @@ $('ghBranch').onchange=()=>{ghCurrentBranch=$('ghBranch').value.trim()||'main';g
 $('ghDisconnect').onclick=()=>{ghToken='';ghUser=null;ghCurrentRepo='';ghCurrentPath='';ghCurrentSha='';sessionStorage.removeItem('brendaide_gh_token');$('ghToken').value='';ghSetConnected(false);toast('GitHub desconectado')};
 $('commitBtn').onclick=ghOpenCommit;$('commitCancel').onclick=()=>commitModal.classList.remove('show');$('commitConfirm').onclick=ghCommit;
 
-window.addEventListener('beforeunload',persist);if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
 </body>
 </html>
