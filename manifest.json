@@ -3,7 +3,7 @@
   "short_name": "Brenda IDE",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#0f1715",
-  "theme_color": "#0f1715",
-  "description": "IDE web simples para editar HTML e visualizar o preview em tempo real."
+  "background_color": "#071126",
+  "theme_color": "#0B1530",
+  "description": "IDE web azul para editar HTML e visualizar preview em tempo real no iPad."
 }

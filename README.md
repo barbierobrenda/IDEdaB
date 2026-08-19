@@ -1,28 +1,22 @@
-# Brenda IDE
+# Brenda IDE v2 — Blue iPad Edition
 
-IDE web estática para editar arquivos HTML e visualizar o resultado em tempo real.
+IDE web para editar HTML no iPad com preview em tempo real.
 
 ## Recursos
-- Editor HTML
-- Preview em tempo real
-- Autosave no navegador
-- Abrir arquivo `.html`
-- Baixar o HTML editado
-- Layout dividido em desktop/iPad horizontal
-- Abas Código/Preview em telas menores
-- PWA instalável na Tela de Início
-- Funciona hospedada no GitHub Pages
+- Visual azul otimizado para iPad
+- Editor HTML + preview ao vivo
+- Autosave local
+- Abrir e salvar `.html`
+- Renomear o arquivo
+- Copiar código
+- Busca no código
+- Formatação simples de HTML
+- Preview em celular, tablet e desktop
+- Preview em nova aba/tela cheia
+- Contador de linhas e caracteres
+- Backup `.json` da IDE
+- Botão Atualizar que faz backup antes de atualizar o PWA
+- PWA instalável pela Tela de Início
 
-## Publicar no GitHub Pages
-1. Crie um repositório, por exemplo `brenda-ide`.
-2. Envie `index.html`, `manifest.json` e `sw.js`.
-3. No GitHub, abra **Settings → Pages**.
-4. Em **Build and deployment**, selecione **Deploy from a branch**.
-5. Escolha `main` e `/ (root)`.
-6. Salve.
-7. Abra a URL do GitHub Pages no iPad.
-8. No Safari, use **Compartilhar → Adicionar à Tela de Início**.
-
-## Importante
-O autosave usa o armazenamento local do navegador. Cada dispositivo mantém sua própria cópia.
-Para versionar alterações no GitHub, baixe o `.html` e faça o commit pelo GitHub ou por um editor conectado ao repositório.
+## GitHub Pages
+Envie `index.html`, `manifest.json` e `sw.js` para a raiz do repositório e habilite GitHub Pages em Settings → Pages.

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0f1715">
+  <meta name="theme-color" content="#0B1530">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Brenda IDE">
@@ -11,287 +11,106 @@
   <title>Brenda IDE — HTML Live</title>
   <style>
     :root{
-      --bg:#0f1715; --panel:#151f1c; --panel2:#1b2824; --line:#2a3935;
-      --text:#eaf4f1; --muted:#98aaa5; --accent:#42d8bb; --accent2:#76ead3;
-      --danger:#ff776f; --shadow:0 14px 44px rgba(0,0,0,.28);
-      --radius:16px;
+      --bg:#071126;--bg2:#0b1733;--panel:#0e1c3a;--panel2:#13264b;--line:#243a66;
+      --text:#eef5ff;--muted:#9fb4d8;--blue:#5ea8ff;--blue2:#8cc4ff;--blue3:#2f80ed;
+      --danger:#ff7c88;--success:#63e6be;--shadow:0 18px 55px rgba(0,0,0,.32);--radius:17px;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    html,body{margin:0;height:100%;background:linear-gradient(180deg,var(--bg),#08152e);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
     body{overflow:hidden}
     button,input,textarea{font:inherit}
-    button{cursor:pointer}
-    .app{height:100dvh;display:grid;grid-template-rows:auto 1fr auto}
-    header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:max(10px,env(safe-area-inset-top)) 14px 10px;
-      border-bottom:1px solid var(--line);background:rgba(15,23,21,.96);backdrop-filter:blur(14px);
-      z-index:10;
-    }
-    .brand{display:flex;align-items:center;gap:10px;min-width:0}
-    .logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(145deg,var(--accent),#1cae93);display:grid;place-items:center;color:#06251f;font-weight:900}
-    .title{font-weight:900;letter-spacing:-.02em}
-    .sub{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
-    .top-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-    .btn{
-      border:1px solid var(--line);background:var(--panel2);color:var(--text);
-      border-radius:11px;padding:9px 12px;font-weight:750;min-height:40px;
-    }
-    .btn.primary{background:var(--accent);color:#07251f;border-color:transparent}
-    .btn.danger{color:#ffc1bd}
+    button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .app{height:100dvh;display:grid;grid-template-rows:auto auto 1fr auto}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:max(10px,env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid var(--line);background:rgba(7,17,38,.94);backdrop-filter:blur(16px);z-index:10}
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,var(--blue2),var(--blue3));display:grid;place-items:center;color:#061129;font-weight:950;box-shadow:0 8px 24px rgba(47,128,237,.25)}
+    .title{font-weight:900;letter-spacing:-.02em}.sub{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
+    .top-actions,.toolbar-actions,.preview-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.top-actions{justify-content:flex-end}
+    .btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:11px;padding:9px 12px;font-weight:760;min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+    .btn:hover{border-color:#41649b}.btn:active{transform:scale(.985)}.btn.primary{background:linear-gradient(180deg,var(--blue),#3c8ff0);color:#061129;border-color:transparent}.btn.soft{background:#102655;color:#cfe4ff}.btn.danger{color:#ffc1c7}.btn.icon{min-width:40px;padding:9px}
+    .toolbar{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);background:#0a1731;overflow-x:auto}.toolbar::-webkit-scrollbar{display:none}
+    .search-wrap{display:flex;gap:6px;align-items:center;min-width:min(360px,48vw)}.search-wrap input,.filename-input{background:#0b1a38;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 11px;outline:0;min-height:38px}.search-wrap input{width:100%}.filename-input{width:170px}
     .workspace{min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
-    .pane{min-width:0;min-height:0;background:var(--panel);display:grid;grid-template-rows:auto 1fr}
-    .pane-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 11px;border-bottom:1px solid var(--line)}
-    .pane-title{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-    .status{font-size:11px;color:var(--muted)}
-    textarea{
-      width:100%;height:100%;resize:none;border:0;outline:0;background:#111a18;color:#dff8f2;
-      padding:16px 18px 80px;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
-      font-size:14px;line-height:1.55;tab-size:2;caret-color:var(--accent2);
-      -webkit-overflow-scrolling:touch;
-    }
-    iframe{width:100%;height:100%;border:0;background:#fff}
-    footer{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-      border-top:1px solid var(--line);background:var(--panel);padding:8px 12px max(8px,env(safe-area-inset-bottom));
-      font-size:11px;color:var(--muted)
-    }
-    .mobile-tabs{display:none}
-    .toast{
-      position:fixed;left:50%;bottom:70px;transform:translateX(-50%) translateY(15px);
-      background:#eaf4f1;color:#101815;padding:10px 14px;border-radius:12px;font-weight:800;
-      opacity:0;pointer-events:none;transition:.18s;box-shadow:var(--shadow);z-index:30
-    }
-    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;place-items:center;padding:18px;z-index:40}
-    .modal.show{display:grid}
-    .card{width:min(520px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
-    .card h3{margin:0 0 8px}.card p{color:var(--muted);line-height:1.45}
-    .row{display:flex;gap:8px}.row .btn{flex:1}
-    input[type=file]{display:none}
-    @media(max-width:760px){
-      header{align-items:flex-start}
-      .top-actions .desktop-only{display:none}
-      .workspace{grid-template-columns:1fr}
-      .pane{display:none}
-      .pane.active{display:grid}
-      .mobile-tabs{display:flex;gap:6px}
-      .mobile-tabs .btn{padding:7px 10px;min-height:34px}
-      .sub{max-width:54vw}
-    }
-    @media(min-width:761px){
-      .pane{display:grid!important}
-    }
+    .pane{min-width:0;min-height:0;background:var(--panel);display:grid;grid-template-rows:auto 1fr}.pane-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 11px;border-bottom:1px solid var(--line);background:#0d1b38}
+    .pane-title{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--blue2)}.status{font-size:11px;color:var(--muted)}
+    .editor-wrap{position:relative;min-height:0}.line-badge{position:absolute;right:12px;bottom:12px;z-index:2;background:rgba(8,21,46,.88);border:1px solid var(--line);border-radius:9px;padding:6px 8px;font-size:10px;color:var(--muted);pointer-events:none}
+    textarea{width:100%;height:100%;resize:none;border:0;outline:0;background:#09162f;color:#e7f2ff;padding:16px 18px 80px;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.58;tab-size:2;caret-color:var(--blue2);-webkit-overflow-scrolling:touch}
+    .preview-stage{height:100%;display:grid;place-items:center;background:radial-gradient(circle at 50% 0%,#16284b,#0a1530 62%);padding:10px;overflow:auto}.preview-shell{width:100%;height:100%;background:#fff;border-radius:10px;overflow:hidden;box-shadow:var(--shadow);transition:.2s}.preview-shell.phone{width:390px;max-width:100%;height:844px;max-height:100%}.preview-shell.tablet{width:820px;max-width:100%;height:1180px;max-height:100%}.preview-shell.desktop{width:100%;height:100%}iframe{width:100%;height:100%;border:0;background:#fff}
+    footer{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);background:#0a1731;padding:8px 12px max(8px,env(safe-area-inset-bottom));font-size:11px;color:var(--muted)}
+    .mobile-tabs{display:none}.toast{position:fixed;left:50%;bottom:72px;transform:translateX(-50%) translateY(15px);background:#eaf3ff;color:#071126;padding:10px 14px;border-radius:12px;font-weight:850;opacity:0;pointer-events:none;transition:.18s;box-shadow:var(--shadow);z-index:30}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;place-items:center;padding:18px;z-index:40}.modal.show{display:grid}.card{width:min(530px,100%);background:#0e1c3a;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}.card h3{margin:0 0 8px}.card p{color:var(--muted);line-height:1.45}.row{display:flex;gap:8px}.row .btn{flex:1}input[type=file]{display:none}
+    @media(max-width:850px){header{align-items:flex-start}.desktop-only{display:none!important}.toolbar{padding:7px 9px}.search-wrap{min-width:230px}.workspace{grid-template-columns:1fr}.pane{display:none}.pane.active{display:grid}.mobile-tabs{display:flex;gap:6px}.mobile-tabs .btn{padding:7px 10px;min-height:34px}.sub{max-width:50vw}.preview-stage{padding:6px}}
+    @media(min-width:851px){.pane{display:grid!important}}
+    @media(max-width:560px){.title{font-size:14px}.sub{max-width:44vw}.top-actions .btn{padding:8px 9px}.toolbar-actions .btn span{display:none}.search-wrap{min-width:190px}.filename-input{width:135px}}
   </style>
 </head>
 <body>
 <div class="app">
   <header>
-    <div class="brand">
-      <div class="logo">&lt;/&gt;</div>
-      <div>
-        <div class="title">Brenda IDE</div>
-        <div class="sub" id="fileName">projeto.html • autosave ativo</div>
-      </div>
-    </div>
+    <div class="brand"><div class="logo">&lt;/&gt;</div><div><div class="title">Brenda IDE</div><div class="sub" id="fileNameLabel">projeto.html • autosave ativo</div></div></div>
     <div class="top-actions">
-      <label class="btn" for="fileInput">Abrir</label>
-      <input id="fileInput" type="file" accept=".html,.htm,text/html">
+      <label class="btn" for="fileInput">Abrir</label><input id="fileInput" type="file" accept=".html,.htm,text/html">
       <button class="btn desktop-only" id="newBtn">Novo</button>
-      <button class="btn" id="downloadBtn">Salvar .html</button>
-      <button class="btn primary desktop-only" id="fullPreviewBtn">Preview</button>
+      <button class="btn primary" id="downloadBtn">Salvar</button>
+      <button class="btn soft" id="updateBtn">↻ Atualizar</button>
     </div>
   </header>
 
+  <div class="toolbar">
+    <div class="toolbar-actions">
+      <input class="filename-input" id="fileNameInput" value="projeto.html" aria-label="Nome do arquivo">
+      <button class="btn" id="copyBtn">⧉ <span>Copiar</span></button>
+      <button class="btn" id="formatBtn">≡ <span>Formatar</span></button>
+      <button class="btn" id="backupBtn">⇩ <span>Backup</span></button>
+    </div>
+    <div class="search-wrap"><input id="searchInput" placeholder="Buscar no código…"><button class="btn icon" id="findBtn">⌕</button></div>
+  </div>
+
   <main class="workspace">
     <section class="pane active" id="editorPane">
-      <div class="pane-head">
-        <div class="pane-title">HTML</div>
-        <div class="mobile-tabs">
-          <button class="btn primary" data-tab="editor">Código</button>
-          <button class="btn" data-tab="preview">Preview</button>
-        </div>
-        <div class="status" id="saveStatus">salvo</div>
-      </div>
-      <textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+      <div class="pane-head"><div class="pane-title">HTML</div><div class="mobile-tabs"><button class="btn primary" data-tab="editor">Código</button><button class="btn" data-tab="preview">Preview</button></div><div class="status" id="saveStatus">salvo</div></div>
+      <div class="editor-wrap"><textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea><div class="line-badge" id="lineBadge">1 linha</div></div>
     </section>
 
     <section class="pane" id="previewPane">
-      <div class="pane-head">
-        <div class="pane-title">Preview em tempo real</div>
-        <div class="mobile-tabs">
-          <button class="btn" data-tab="editor">Código</button>
-          <button class="btn primary" data-tab="preview">Preview</button>
-        </div>
-        <div class="status" id="previewStatus">atualizado</div>
-      </div>
-      <iframe id="preview" sandbox="allow-scripts allow-forms allow-modals allow-same-origin"></iframe>
+      <div class="pane-head"><div class="pane-title">Preview em tempo real</div><div class="preview-tools"><button class="btn icon" data-size="phone" title="Celular">▯</button><button class="btn icon" data-size="tablet" title="Tablet">▭</button><button class="btn icon" data-size="desktop" title="Desktop">▰</button><button class="btn" id="fullPreviewBtn">Tela cheia</button></div><div class="mobile-tabs"><button class="btn" data-tab="editor">Código</button><button class="btn primary" data-tab="preview">Preview</button></div></div>
+      <div class="preview-stage"><div class="preview-shell desktop" id="previewShell"><iframe id="preview" sandbox="allow-scripts allow-forms allow-modals allow-same-origin"></iframe></div></div>
     </section>
   </main>
 
-  <footer>
-    <span>⌘/Ctrl + S baixa o HTML</span>
-    <span id="charCount">0 caracteres</span>
-  </footer>
+  <footer><span>⌘/Ctrl + S salva • ⌘/Ctrl + F busca</span><span id="charCount">0 caracteres</span></footer>
 </div>
-
 <div class="toast" id="toast"></div>
-
-<div class="modal" id="newModal">
-  <div class="card">
-    <h3>Novo arquivo</h3>
-    <p>Isso substitui o código aberto no editor. O arquivo atual continuará salvo automaticamente neste navegador.</p>
-    <div class="row">
-      <button class="btn" id="cancelNew">Cancelar</button>
-      <button class="btn danger" id="confirmNew">Criar novo</button>
-    </div>
-  </div>
-</div>
-
+<div class="modal" id="newModal"><div class="card"><h3>Novo arquivo</h3><p>O conteúdo atual continuará salvo no backup local da IDE, mas o editor será substituído por um HTML novo.</p><div class="row"><button class="btn" id="cancelNew">Cancelar</button><button class="btn danger" id="confirmNew">Criar novo</button></div></div></div>
 <script>
-const editor = document.getElementById('editor');
-const preview = document.getElementById('preview');
-const saveStatus = document.getElementById('saveStatus');
-const previewStatus = document.getElementById('previewStatus');
-const fileNameEl = document.getElementById('fileName');
-const charCount = document.getElementById('charCount');
-const fileInput = document.getElementById('fileInput');
-const toastEl = document.getElementById('toast');
-
-let currentFileName = localStorage.getItem('brendaide_filename') || 'projeto.html';
-let updateTimer;
-
-const starter = `<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meu projeto</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Olá 👋</h1>
-  <p>Edite o HTML e veja o resultado ao lado.</p>
-</body>
-</html>`;
-
-function toast(msg){
-  toastEl.textContent = msg;
-  toastEl.classList.add('show');
-  clearTimeout(toastEl._timer);
-  toastEl._timer = setTimeout(()=>toastEl.classList.remove('show'), 1800);
-}
-
-function setFileName(name){
-  currentFileName = name || 'projeto.html';
-  if(!/\.html?$/i.test(currentFileName)) currentFileName += '.html';
-  localStorage.setItem('brendaide_filename', currentFileName);
-  fileNameEl.textContent = currentFileName + ' • autosave ativo';
-}
-
-function render(){
-  preview.srcdoc = editor.value;
-  previewStatus.textContent = 'atualizado agora';
-  charCount.textContent = editor.value.length.toLocaleString('pt-BR') + ' caracteres';
-}
-
-function persist(){
-  localStorage.setItem('brendaide_code', editor.value);
-  saveStatus.textContent = 'salvo';
-}
-
-function scheduleUpdate(){
-  saveStatus.textContent = 'salvando...';
-  previewStatus.textContent = 'atualizando...';
-  clearTimeout(updateTimer);
-  updateTimer = setTimeout(()=>{
-    persist();
-    render();
-  }, 220);
-}
-
-editor.value = localStorage.getItem('brendaide_code') || starter;
-setFileName(currentFileName);
-render();
-
-editor.addEventListener('input', scheduleUpdate);
-
-editor.addEventListener('keydown', (e)=>{
-  if(e.key === 'Tab'){
-    e.preventDefault();
-    const start = editor.selectionStart;
-    const end = editor.selectionEnd;
-    editor.setRangeText('  ', start, end, 'end');
-    scheduleUpdate();
-  }
-  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's'){
-    e.preventDefault();
-    downloadHtml();
-  }
-});
-
-fileInput.addEventListener('change', async ()=>{
-  const file = fileInput.files?.[0];
-  if(!file) return;
-  editor.value = await file.text();
-  setFileName(file.name);
-  persist();
-  render();
-  toast('Arquivo aberto');
-  fileInput.value = '';
-});
-
-function downloadHtml(){
-  const blob = new Blob([editor.value], {type:'text/html;charset=utf-8'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = currentFileName;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
-  persist();
-  toast('HTML salvo');
-}
-document.getElementById('downloadBtn').addEventListener('click', downloadHtml);
-
-document.getElementById('fullPreviewBtn').addEventListener('click', ()=>{
-  const blob = new Blob([editor.value], {type:'text/html;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const win = window.open(url, '_blank');
-  if(!win) toast('Permita pop-ups para abrir o preview');
-  setTimeout(()=>URL.revokeObjectURL(url), 60000);
-});
-
-const newModal = document.getElementById('newModal');
-document.getElementById('newBtn').addEventListener('click', ()=>newModal.classList.add('show'));
-document.getElementById('cancelNew').addEventListener('click', ()=>newModal.classList.remove('show'));
-document.getElementById('confirmNew').addEventListener('click', ()=>{
-  editor.value = starter;
-  setFileName('projeto.html');
-  persist(); render();
-  newModal.classList.remove('show');
-  toast('Novo arquivo criado');
-});
-
-document.querySelectorAll('[data-tab]').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const tab = btn.dataset.tab;
-    document.getElementById('editorPane').classList.toggle('active', tab === 'editor');
-    document.getElementById('previewPane').classList.toggle('active', tab === 'preview');
-  });
-});
-
-window.addEventListener('beforeunload', persist);
-
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
-}
+const $=id=>document.getElementById(id);
+const editor=$('editor'),preview=$('preview'),saveStatus=$('saveStatus'),fileNameLabel=$('fileNameLabel'),fileNameInput=$('fileNameInput'),charCount=$('charCount'),lineBadge=$('lineBadge'),fileInput=$('fileInput'),toastEl=$('toast'),previewShell=$('previewShell');
+let currentFileName=localStorage.getItem('brendaide_filename')||'projeto.html',updateTimer;
+const starter=`<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>Meu projeto</title>\n  <style>\n    body {\n      font-family: Arial, sans-serif;\n      margin: 40px;\n    }\n  </style>\n</head>\n<body>\n  <h1>Olá 👋</h1>\n  <p>Edite o HTML e veja o resultado ao lado.</p>\n</body>\n</html>`;
+function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastEl._timer);toastEl._timer=setTimeout(()=>toastEl.classList.remove('show'),1900)}
+function setFileName(name){currentFileName=(name||'projeto.html').trim();if(!/\.html?$/i.test(currentFileName))currentFileName+='.html';localStorage.setItem('brendaide_filename',currentFileName);fileNameLabel.textContent=currentFileName+' • autosave ativo';fileNameInput.value=currentFileName}
+function stats(){charCount.textContent=editor.value.length.toLocaleString('pt-BR')+' caracteres';const lines=editor.value.split('\n').length;lineBadge.textContent=lines+(lines===1?' linha':' linhas')}
+function render(){preview.srcdoc=editor.value;stats()}
+function persist(){localStorage.setItem('brendaide_code',editor.value);localStorage.setItem('brendaide_lastsave',new Date().toISOString());saveStatus.textContent='salvo'}
+function scheduleUpdate(){saveStatus.textContent='salvando…';clearTimeout(updateTimer);updateTimer=setTimeout(()=>{persist();render()},180)}
+function download(content,name,type='text/html;charset=utf-8'){const blob=new Blob([content],{type});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200)}
+function downloadHtml(){setFileName(fileNameInput.value);persist();download(editor.value,currentFileName);toast('HTML salvo')}
+function backupIde(){const backup={app:'Brenda IDE',version:2,date:new Date().toISOString(),filename:currentFileName,code:editor.value};const stamp=new Date().toISOString().replace(/[:.]/g,'-');download(JSON.stringify(backup,null,2),'BrendaIDE_Backup_'+stamp+'.json','application/json');toast('Backup da IDE salvo')}
+function simpleFormatHTML(src){let out='',indent=0;const tokens=src.replace(/>\s*</g,'>\n<').split('\n');const voidTag=/^<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)\b/i;tokens.forEach(raw=>{const s=raw.trim();if(!s)return;if(/^<\//.test(s))indent=Math.max(0,indent-1);out+='  '.repeat(indent)+s+'\n';if(/^<[^!/][^>]*>/.test(s)&&!/^<\//.test(s)&&!voidTag.test(s)&&!/>.*<\//.test(s)&&!/<\/$/.test(s)&&!s.endsWith('/>'))indent++});return out.trimEnd()}
+editor.value=localStorage.getItem('brendaide_code')||starter;setFileName(currentFileName);render();
+editor.addEventListener('input',scheduleUpdate);fileNameInput.addEventListener('change',()=>setFileName(fileNameInput.value));
+editor.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();editor.setRangeText('  ',editor.selectionStart,editor.selectionEnd,'end');scheduleUpdate()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();downloadHtml()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='f'){e.preventDefault();$('searchInput').focus()}});
+fileInput.addEventListener('change',async()=>{const file=fileInput.files?.[0];if(!file)return;editor.value=await file.text();setFileName(file.name);persist();render();toast('Arquivo aberto');fileInput.value=''});
+$('downloadBtn').onclick=downloadHtml;$('backupBtn').onclick=backupIde;
+$('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(editor.value);toast('Código copiado')}catch{editor.select();document.execCommand('copy');toast('Código copiado')}};
+$('formatBtn').onclick=()=>{editor.value=simpleFormatHTML(editor.value);persist();render();toast('HTML formatado')};
+$('findBtn').onclick=()=>{const q=$('searchInput').value;if(!q)return;const start=editor.selectionEnd||0;let i=editor.value.toLowerCase().indexOf(q.toLowerCase(),start);if(i<0)i=editor.value.toLowerCase().indexOf(q.toLowerCase());if(i>=0){editor.focus();editor.setSelectionRange(i,i+q.length);toast('Encontrado')}else toast('Não encontrado')};
+$('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('findBtn').click()});
+$('fullPreviewBtn').onclick=()=>{const blob=new Blob([editor.value],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),win=window.open(url,'_blank');if(!win)toast('Permita pop-ups para o preview');setTimeout(()=>URL.revokeObjectURL(url),60000)};
+document.querySelectorAll('[data-size]').forEach(b=>b.onclick=()=>{previewShell.className='preview-shell '+b.dataset.size;toast('Preview: '+({phone:'celular',tablet:'tablet',desktop:'desktop'}[b.dataset.size]))});
+const newModal=$('newModal');$('newBtn').onclick=()=>newModal.classList.add('show');$('cancelNew').onclick=()=>newModal.classList.remove('show');$('confirmNew').onclick=()=>{backupIde();editor.value=starter;setFileName('projeto.html');persist();render();newModal.classList.remove('show');toast('Novo arquivo criado')};
+document.querySelectorAll('[data-tab]').forEach(btn=>btn.onclick=()=>{const tab=btn.dataset.tab;$('editorPane').classList.toggle('active',tab==='editor');$('previewPane').classList.toggle('active',tab==='preview')});
+$('updateBtn').onclick=async()=>{const btn=$('updateBtn');btn.disabled=true;btn.textContent='Salvando backup…';backupIde();await new Promise(r=>setTimeout(r,700));btn.textContent='Atualizando…';try{if('serviceWorker'in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update();}const url=new URL(location.href);url.searchParams.set('_v',Date.now());location.replace(url.toString())}catch(e){btn.disabled=false;btn.textContent='↻ Atualizar';toast('Não foi possível atualizar')}};
+window.addEventListener('beforeunload',persist);if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
 </body>
 </html>
