@@ -50,10 +50,56 @@
     @media(max-width:850px){header{align-items:flex-start}.desktop-only{display:none!important}.toolbar{padding:7px 9px}.search-wrap{min-width:230px}.workspace{grid-template-columns:1fr}.pane{display:none}.pane.active{display:grid}.mobile-tabs{display:flex;gap:6px}.mobile-tabs .btn{padding:7px 10px;min-height:34px}.sub{max-width:50vw}.preview-stage{padding:6px}}
     @media(min-width:851px){.pane{display:grid!important}}
     @media(max-width:560px){.title{font-size:14px}.sub{max-width:44vw}.top-actions .btn{padding:8px 9px}.toolbar-actions .btn span{display:none}.search-wrap{min-width:190px}.filename-input{width:135px}}
+  
+    /* ===== Brenda IDE v3.3 — Minimal iPad ===== */
+    :root{
+      --bg:#061326;--bg2:#08182e;--panel:#081a34;--panel2:#0c2141;--line:#17365f;
+      --text:#f3f7ff;--muted:#9cb0cf;--blue:#1985ff;--blue2:#67b1ff;--blue3:#0f6fe8;
+      --shadow:none;--radius:12px;
+    }
+    html,body{width:100%;min-height:100%;background:var(--bg)!important;overscroll-behavior:none}
+    body{min-height:100dvh;min-height:-webkit-fill-available;overflow:hidden;padding:0!important;margin:0!important}
+    .ide-shell{height:100dvh;min-height:100dvh;display:grid;grid-template-columns:54px minmax(0,1fr);background:var(--bg);padding-bottom:env(safe-area-inset-bottom)}
+    .app{height:calc(100dvh - env(safe-area-inset-bottom));min-height:0;background:var(--bg);grid-template-rows:auto auto minmax(0,1fr) auto}
+    .side-rail{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 7px 10px;border-right:1px solid var(--line);background:#061326}
+    .rail-btn{width:40px;height:40px;min-height:40px;padding:0;border:0;border-radius:10px;background:transparent;color:#aabbd5;font-size:19px;font-weight:700;display:grid;place-items:center}
+    .rail-btn.active{background:#0b2a54;color:#4fa5ff}.rail-btn:active{background:#102b50}.rail-bottom{margin-top:auto}
+    header{min-height:72px;padding:max(10px,env(safe-area-inset-top)) 18px 10px;background:#061326;border-bottom:1px solid var(--line);backdrop-filter:none}
+    .logo{width:38px;height:38px;min-width:38px;min-height:38px;max-width:38px;max-height:38px;border-radius:10px;box-shadow:none;background:#0b2a54}
+    .title{font-size:18px}.sub{font-size:11px;color:#98aac5}
+    .btn{background:transparent;border:1px solid transparent;border-radius:10px;min-height:38px;padding:8px 11px;color:#eef5ff;font-weight:700;box-shadow:none}
+    .btn:hover,.btn:active{border-color:var(--line);background:#0b1d38}.btn.soft{background:transparent;color:#eef5ff}.btn.primary{background:#1685ff;color:#fff;border-color:#1685ff}
+    #updateBtn{background:#1685ff;color:#fff;border-color:#1685ff}
+    .toolbar{min-height:58px;padding:9px 14px;background:#07162c;border-bottom:1px solid var(--line);align-items:center}
+    .toolbar-actions{flex-wrap:nowrap}.filename-input{width:190px;background:#091b35;border-color:#17365f;border-radius:9px}.search-wrap input{background:#091b35;border-color:#17365f;border-radius:9px}
+    .workspace{gap:0;background:var(--line);border-bottom:1px solid var(--line)}
+    .pane{background:#07172e}.pane:first-child{border-right:1px solid var(--line)}
+    .pane-head{height:48px;padding:10px 14px;background:#07172e;border-bottom:1px solid var(--line)}
+    .pane-title{font-size:12px;color:#d8e7ff;letter-spacing:.08em}.status{color:#91a5c3}
+    textarea{background:#06162e;color:#dce8fb;padding:18px 20px 72px;font-size:14px;line-height:1.6}
+    .line-badge{border:0;background:transparent;color:#7f94b4;right:14px;bottom:9px}
+    .preview-stage{background:#07172e;padding:10px}.preview-shell{border-radius:10px;box-shadow:none;border:1px solid #d9dfe8}
+    footer{min-height:40px;padding:7px 14px;background:#061326;border-top:0;color:#8fa4c5}
+    .github-pill{background:transparent;border-color:var(--line)}
+    .card{border-radius:14px;box-shadow:none;background:#081a34}
+    @media(max-width:850px){
+      .ide-shell{grid-template-columns:46px minmax(0,1fr)}.side-rail{padding-left:4px;padding-right:4px}.rail-btn{width:36px;height:38px;min-height:38px}
+      header{padding-left:12px;padding-right:12px}.toolbar{padding-left:10px;padding-right:10px}.search-wrap{min-width:200px}
+    }
+    @media(max-width:620px){.side-rail{display:none}.ide-shell{grid-template-columns:1fr}.app{height:calc(100dvh - env(safe-area-inset-bottom))}}
+
   </style>
 </head>
 <body>
-<div class="app">
+<div class="ide-shell">
+  <aside class="side-rail" aria-label="Atalhos">
+    <button class="rail-btn active" id="railCode" title="Código">&lt;/&gt;</button>
+    <button class="rail-btn" id="railFiles" title="Abrir arquivo">▢</button>
+    <button class="rail-btn" id="railSearch" title="Buscar">⌕</button>
+    <button class="rail-btn" id="railSettings" title="Configurações">⚙</button>
+    <button class="rail-btn rail-bottom" id="railInfo" title="Sobre">ⓘ</button>
+  </aside>
+  <div class="app">
   <header>
     <div class="brand"><div class="logo"><img src="brenda-ide-logo.jpg" alt="Logo Brenda IDE"></div><div><div class="title">Brenda IDE</div><div class="sub" id="fileNameLabel">projeto.html • alterações só nesta sessão</div></div></div>
     <div class="top-actions">
@@ -90,6 +136,9 @@
 
   <footer><span>⌘/Ctrl + S salva • ⌘/Ctrl + F busca</span><span id="charCount">0 caracteres</span></footer>
 </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <div class="modal" id="newModal"><div class="card"><h3>Novo arquivo</h3><p>O editor será substituído por um HTML novo. Nada será salvo automaticamente.</p><div class="row"><button class="btn" id="cancelNew">Cancelar</button><button class="btn danger" id="confirmNew">Criar novo</button></div></div></div>
 <div class="modal" id="githubModal"><div class="card github-card">
@@ -172,6 +221,13 @@ $('ghRepo').onchange=async()=>{ghCurrentRepo=$('ghRepo').value;ghCurrentBranch=$
 $('ghBranch').onchange=()=>{ghCurrentBranch=$('ghBranch').value.trim()||'main';ghCurrentPath='';ghCurrentSha='';$('commitBtn').disabled=true;ghBrowse('')};
 $('ghDisconnect').onclick=()=>{ghToken='';ghUser=null;ghCurrentRepo='';ghCurrentPath='';ghCurrentSha='';sessionStorage.removeItem('brendaide_gh_token');$('ghToken').value='';ghSetConnected(false);toast('GitHub desconectado')};
 $('commitBtn').onclick=ghOpenCommit;$('commitCancel').onclick=()=>commitModal.classList.remove('show');$('commitConfirm').onclick=ghCommit;
+
+
+$('railCode').onclick=()=>{editor.focus();toast('Editor')};
+$('railFiles').onclick=()=>fileInput.click();
+$('railSearch').onclick=()=>{$('searchInput').focus();toast('Buscar no código')};
+$('railSettings').onclick=()=>toast('Configurações: em breve');
+$('railInfo').onclick=()=>toast('Brenda IDE v3.3 • Minimal');
 
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>

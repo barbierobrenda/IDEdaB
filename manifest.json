@@ -3,8 +3,8 @@
   "short_name": "Brenda IDE",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#071126",
-  "theme_color": "#0A2D68",
+  "background_color": "#061326",
+  "theme_color": "#061326",
   "description": "IDE web para HTML com preview em tempo real e integração opcional com GitHub.",
   "icons": [
     {
