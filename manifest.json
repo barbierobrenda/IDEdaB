@@ -1,10 +1,10 @@
 {
-  "name": "Brenda IDE — Blue iPad Edition",
+  "name": "Brenda IDE — Purple Minimal",
   "short_name": "Brenda IDE",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#061326",
-  "theme_color": "#061326",
+  "background_color": "#100a1e",
+  "theme_color": "#100a1e",
   "description": "IDE web para HTML com preview em tempo real e integração opcional com GitHub.",
   "icons": [
     {
