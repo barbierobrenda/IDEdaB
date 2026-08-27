@@ -27,3 +27,10 @@ Envie todos os arquivos deste ZIP para um repositório e habilite Settings → P
 - Barra lateral compacta com atalhos.
 - Rodapé e safe area do iPad em azul escuro, sem faixa branca.
 - Mantém GitHub, backup manual, preview e atualização.
+
+## v3.4 Purple Minimal
+- Identidade roxa, com tema claro e escuro (botão 🌙/☀ no cabeçalho, lembrado entre sessões).
+- Editor com realce de sintaxe colorido (CodeMirror), tema Dracula no modo escuro e Eclipse no modo claro.
+- Suporte a muito mais tipos de arquivo além de HTML: CSS, JS/JSX/TS/TSX, JSON, Markdown, XML/SVG, Python, PHP, SQL, YAML, Shell, C/C++, Java, Ruby, Go e Rust — tanto ao abrir do dispositivo quanto do GitHub.
+- A linguagem detectada aparece como uma etiqueta ao lado do título do editor.
+- Preview em tempo real continua específico para HTML/PHP; outros tipos aparecem formatados como texto no painel de preview.
