@@ -28,7 +28,9 @@ Envie todos os arquivos deste ZIP para um repositório e habilite Settings → P
 - Rodapé e safe area do iPad em azul escuro, sem faixa branca.
 - Mantém GitHub, backup manual, preview e atualização.
 
-## v3.5 Purple Dashboard
+## v3.6 Ícones e acabamento
+- Ícone do app trocado: era azul (destoava do resto), agora é o gradiente roxo→magenta→laranja com "</>" branco, igual ao logo do cabeçalho e ao ícone do PWA (192px/512px).
+- Todos os ícones de botão (código, arquivos, buscar, configurações, sobre, tema, GitHub, atualizar, copiar, formatar, backup, commitar, tamanhos de preview, tela cheia) trocados de emoji/símbolos soltos para um conjunto de ícones SVG consistente (traço fino, monocromático), em vez da mistura de emojis coloridos com símbolos Unicode.
 - Página de Configurações de verdade (⚙ na barra lateral): tema, tamanho da fonte do editor, tamanho da tabulação, quebra de linha, números de linha, fechamento automático de colchetes e destaque da linha atual — tudo salvo entre sessões.
 - Abertura de **pasta completa** do projeto (📁 Pasta no cabeçalho, ou pelo explorador de arquivos ▢ na barra lateral): navega em árvore de pastas/arquivos e troca entre eles mantendo as edições de cada um na memória da sessão.
 - Com uma pasta aberta, o **preview resolve os caminhos relativos de verdade**: `<link href="css/style.css">`, `<script src="js/app.js">`, `<img src="img/logo.png">` etc. — inclusive `url(...)` dentro do próprio CSS — passam a carregar os arquivos certos dentro da pasta.
