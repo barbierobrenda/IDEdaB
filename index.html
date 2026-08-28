@@ -15,63 +15,66 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/theme/eclipse.min.css">
   <style>
     :root, [data-theme="dark"]{
-      --bg:#100a1e;--bg2:#160f28;--panel:#160f28;--panel2:#1c1433;--line:#2c2148;
-      --text:#f3edff;--muted:#a698c8;
-      --accent:#a855f7;--accent2:#c9a3ff;--accent3:#8b2fe0;
-      --danger:#ff8a93;--success:#63e6be;
-      --shadow:none;--radius:14px;
-      --input-bg:#180f2c;--editor-bg:#120b22;--editor-text:#efe6ff;
-      --rail-bg:#100a1e;--rail-active-bg:#2a1c4d;--rail-active-text:#d3adff;
-      --card-bg:#180f2c;--pill-bg:#180f2c;--preview-border:#dcd6e6;
-      --btn-primary-text:#ffffff;--toast-bg:#f2e9ff;--toast-text:#1c1130;
-      --security-bg:#221340;--security-border:#4a2f7a;--security-text:#d9c4ff;
+      --bg:#0a0d1c;--bg2:#0f1226;--panel:#12162c;--panel2:#191d3c;--line:#272c4d;
+      --text:#f4f1ff;--muted:#8d90b8;
+      --accent:#8b5cf6;--accent2:#c9b8ff;--accent3:#f97316;
+      --gradient:linear-gradient(135deg,#8b5cf6,#c026d3 55%,#f97316);
+      --danger:#ff6b7a;--success:#34d399;
+      --shadow:0 14px 34px rgba(139,92,246,.18);--card-glow:0 0 0 1px rgba(139,92,246,.12),0 18px 40px rgba(139,92,246,.14);--radius:18px;
+      --input-bg:#171b38;--editor-bg:#0d0f22;--editor-text:#efe9ff;
+      --rail-bg:#0a0d1c;--rail-active-bg:var(--gradient);--rail-active-text:#ffffff;
+      --card-bg:#151834;--pill-bg:#171b38;--preview-border:#302a55;
+      --btn-primary-text:#ffffff;--toast-bg:#211a3d;--toast-text:#f3edff;
+      --security-bg:#231a42;--security-border:#4a2f7a;--security-text:#d9c4ff;
     }
     [data-theme="light"]{
-      --bg:#faf8ff;--bg2:#f3edfc;--panel:#ffffff;--panel2:#f6f1fd;--line:#e2d6f5;
-      --text:#241735;--muted:#6e5c8c;
-      --accent:#9333ea;--accent2:#7e22ce;--accent3:#7e22ce;
-      --danger:#d6314a;--success:#1c9d72;
-      --shadow:0 10px 28px rgba(90,40,150,.09);--radius:14px;
-      --input-bg:#ffffff;--editor-bg:#fbf9ff;--editor-text:#2a1a40;
-      --rail-bg:#f4eefc;--rail-active-bg:#e6d6fb;--rail-active-text:#7e22ce;
-      --card-bg:#ffffff;--pill-bg:#f4eefc;--preview-border:#e2d6f5;
-      --btn-primary-text:#ffffff;--toast-bg:#2a1745;--toast-text:#f3edff;
-      --security-bg:#f3e9ff;--security-border:#d9c2f7;--security-text:#4a2f7a;
+      --bg:#f3f2f9;--bg2:#ffffff;--panel:#ffffff;--panel2:#f5f3fc;--line:#e7e3f5;
+      --text:#1c1a2e;--muted:#7a7793;
+      --accent:#7c3aed;--accent2:#6d28d9;--accent3:#ea580c;
+      --gradient:linear-gradient(135deg,#7c3aed,#c026d3 55%,#f97316);
+      --danger:#dc2f45;--success:#0f9d68;
+      --shadow:0 14px 32px rgba(124,58,237,.12);--card-glow:0 1px 0 rgba(124,58,237,.06),0 16px 34px rgba(124,58,237,.10);--radius:18px;
+      --input-bg:#ffffff;--editor-bg:#fbfaff;--editor-text:#241f38;
+      --rail-bg:#ffffff;--rail-active-bg:var(--gradient);--rail-active-text:#ffffff;
+      --card-bg:#ffffff;--pill-bg:#f5f3fc;--preview-border:#e7e3f5;
+      --btn-primary-text:#ffffff;--toast-bg:#241f38;--toast-text:#f4f1ff;
+      --security-bg:#f4edff;--security-border:#d9c2f7;--security-text:#4a2f7a;
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%;width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overscroll-behavior:none;transition:background .2s,color .2s}
     body{overflow:hidden;min-height:100dvh;min-height:-webkit-fill-available;padding:0!important}
     button,input,textarea{font:inherit}
     button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+    ::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}::-webkit-scrollbar-thumb:hover{background:var(--accent)}
 
-    .ide-shell{height:100dvh;min-height:100dvh;display:grid;grid-template-columns:52px minmax(0,1fr);background:var(--bg);padding-bottom:env(safe-area-inset-bottom)}
+    .ide-shell{height:100dvh;min-height:100dvh;display:grid;grid-template-columns:56px minmax(0,1fr);background:var(--bg);padding-bottom:env(safe-area-inset-bottom)}
     .app{height:calc(100dvh - env(safe-area-inset-bottom));min-height:0;background:var(--bg);display:grid;grid-template-rows:auto auto minmax(0,1fr) auto}
-    .side-rail{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 7px 10px;border-right:1px solid var(--line);background:var(--rail-bg)}
-    .rail-btn{width:38px;height:38px;min-height:38px;padding:0;border:0;border-radius:10px;background:transparent;color:var(--muted);font-size:18px;font-weight:700;display:grid;place-items:center}
-    .rail-btn.active{background:var(--rail-active-bg);color:var(--rail-active-text)}.rail-btn:active{background:var(--panel2)}.rail-bottom{margin-top:auto}
+    .side-rail{display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 8px 10px;border-right:1px solid var(--line);background:var(--rail-bg)}
+    .rail-btn{width:38px;height:38px;min-height:38px;padding:0;border:0;border-radius:12px;background:transparent;color:var(--muted);font-size:18px;font-weight:700;display:grid;place-items:center;transition:.15s}
+    .rail-btn.active{background:var(--rail-active-bg);color:var(--rail-active-text);box-shadow:0 6px 18px rgba(139,92,246,.4)}.rail-btn:active{background:var(--panel2)}.rail-bottom{margin-top:auto}
 
     header{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:70px;padding:max(10px,env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line);background:var(--bg2)}
     .brand{display:flex;align-items:center;gap:10px;min-width:0}
-    .logo{width:38px;height:38px;min-width:38px;min-height:38px;max-width:38px;max-height:38px;border-radius:10px;background:var(--panel2);display:grid;place-items:center;overflow:hidden;color:var(--btn-primary-text);font-weight:950}
+    .logo{width:38px;height:38px;min-width:38px;min-height:38px;max-width:38px;max-height:38px;border-radius:12px;background:var(--gradient);display:grid;place-items:center;overflow:hidden;color:#fff;font-weight:950;box-shadow:0 6px 16px rgba(139,92,246,.45)}
     .logo img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
-    .title{font-weight:800;letter-spacing:-.02em;font-size:17px}
+    .title{font-weight:850;letter-spacing:-.02em;font-size:17px;background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--text)}
     .sub{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}
     .top-actions,.toolbar-actions,.preview-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.top-actions{justify-content:flex-end}
 
-    .btn{border:1px solid transparent;background:transparent;color:var(--text);border-radius:10px;padding:8px 11px;font-weight:650;min-height:38px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+    .btn{border:1px solid transparent;background:transparent;color:var(--text);border-radius:11px;padding:8px 11px;font-weight:650;min-height:38px;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.15s}
     .btn:hover,.btn:active{border-color:var(--line);background:var(--panel2)}
-    .btn.primary{background:var(--accent);color:var(--btn-primary-text);border-color:var(--accent)}
-    .btn.primary:hover{background:var(--accent3);border-color:var(--accent3)}
+    .btn.primary{background:var(--gradient);color:var(--btn-primary-text);border-color:transparent;box-shadow:0 8px 20px rgba(139,92,246,.35)}
+    .btn.primary:hover{filter:brightness(1.08);box-shadow:0 10px 24px rgba(139,92,246,.45)}
     .btn.soft{background:transparent;color:var(--text);border-color:var(--line)}
     .btn.danger{color:var(--danger)}
     .btn.icon{min-width:38px;padding:8px}
-    #updateBtn{background:var(--accent);color:var(--btn-primary-text);border-color:var(--accent)}
+    #updateBtn{background:var(--gradient);color:var(--btn-primary-text);border-color:transparent;box-shadow:0 8px 20px rgba(139,92,246,.35)}
     #themeToggle{font-size:16px}
 
     .toolbar{display:flex;justify-content:space-between;gap:10px;min-height:56px;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--bg2);overflow-x:auto;align-items:center}
     .toolbar::-webkit-scrollbar{display:none}.toolbar-actions{flex-wrap:nowrap}
     .search-wrap{display:flex;gap:6px;align-items:center;min-width:min(340px,46vw)}
-    .search-wrap input,.filename-input{background:var(--input-bg);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:9px 11px;outline:0;min-height:38px}
+    .search-wrap input,.filename-input{background:var(--input-bg);border:1px solid var(--line);color:var(--text);border-radius:11px;padding:9px 11px;outline:0;min-height:38px}
     .search-wrap input{width:100%}.filename-input{width:180px}
 
     .workspace{min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--line);border-bottom:1px solid var(--line)}
@@ -80,17 +83,16 @@
     .pane-head{display:flex;align-items:center;justify-content:space-between;gap:8px;height:46px;padding:0 13px;border-bottom:1px solid var(--line);background:var(--panel)}
     .pane-title{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2)}
     .status{font-size:11px;color:var(--muted)}
-
     .editor-wrap{position:relative;min-height:0}
     .line-badge{position:absolute;right:13px;bottom:10px;z-index:2;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:10px;color:var(--muted);pointer-events:none;opacity:.92}
     textarea{width:100%;height:100%;resize:none;border:0;outline:0;background:var(--editor-bg);color:var(--editor-text);padding:18px 20px 76px;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.6;tab-size:2;caret-color:var(--accent2);-webkit-overflow-scrolling:touch}
-    .editor-wrap .CodeMirror{height:100%;width:100%;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:13.5px;line-height:1.6;padding-bottom:60px}
+    .editor-wrap .CodeMirror{height:100%;width:100%;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:var(--cm-font-size,13.5px);line-height:1.6;padding-bottom:60px}
     .editor-wrap .CodeMirror-gutters{border-right:1px solid var(--line)}
     .editor-wrap .CodeMirror pre.CodeMirror-line{padding-right:16px}
     .lang-pill{font-size:10px;font-weight:800;letter-spacing:.04em;color:var(--accent2);background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 9px;text-transform:uppercase}
 
     .preview-stage{height:100%;display:grid;place-items:center;background:var(--panel);padding:10px;overflow:auto}
-    .preview-shell{width:100%;height:100%;background:#fff;border-radius:10px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--preview-border);transition:.2s}
+    .preview-shell{width:100%;height:100%;background:#fff;border-radius:14px;overflow:hidden;box-shadow:var(--card-glow);border:1px solid var(--preview-border);transition:.2s}
     .preview-shell.phone{width:390px;max-width:100%;height:844px;max-height:100%}
     .preview-shell.tablet{width:820px;max-width:100%;height:1180px;max-height:100%}
     .preview-shell.desktop{width:100%;height:100%}
@@ -98,11 +100,11 @@
 
     footer{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);background:var(--bg2);min-height:38px;padding:7px 14px max(7px,env(safe-area-inset-bottom));font-size:11px;color:var(--muted)}
     .mobile-tabs{display:none}
-    .toast{position:fixed;left:50%;bottom:72px;transform:translateX(-50%) translateY(15px);background:var(--toast-bg);color:var(--toast-text);padding:10px 14px;border-radius:12px;font-weight:750;opacity:0;pointer-events:none;transition:.18s;box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:30}
+    .toast{position:fixed;left:50%;bottom:72px;transform:translateX(-50%) translateY(15px);background:var(--toast-bg);color:var(--toast-text);padding:10px 14px;border-radius:14px;font-weight:750;opacity:0;pointer-events:none;transition:.18s;box-shadow:0 12px 30px rgba(0,0,0,.3);z-index:30;border:1px solid var(--line)}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    .modal{position:fixed;inset:0;background:rgba(10,4,20,.6);display:none;place-items:center;padding:18px;z-index:40}.modal.show{display:grid}
-    .card{width:min(530px,100%);background:var(--card-bg);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
-    .card h3{margin:0 0 8px}.card p{color:var(--muted);line-height:1.45}
+    .modal{position:fixed;inset:0;background:rgba(6,4,16,.65);display:none;place-items:center;padding:18px;z-index:40;backdrop-filter:blur(2px)}.modal.show{display:grid}
+    .card{width:min(530px,100%);background:var(--card-bg);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--card-glow)}
+    .card h3{margin:0 0 8px;background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}.card p{color:var(--muted);line-height:1.45}
     .row{display:flex;gap:8px}.row .btn{flex:1}
     input[type=file]{display:none}
 
@@ -110,26 +112,53 @@
     .github-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--pill-bg);color:var(--muted);font-size:11px;font-weight:750;white-space:nowrap}
     .github-pill.connected{color:var(--accent2);border-color:var(--accent);background:var(--panel2)}
     .github-dot{width:8px;height:8px;border-radius:50%;background:#71829f}
-    .github-pill.connected .github-dot{background:var(--success);box-shadow:0 0 0 4px rgba(99,230,190,.12)}
+    .github-pill.connected .github-dot{background:var(--gradient);box-shadow:0 0 0 4px rgba(139,92,246,.18)}
     .github-card{width:min(760px,100%)}
     .github-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .github-field{display:flex;flex-direction:column;gap:5px}.github-field.full{grid-column:1/-1}
     .github-field label{font-size:11px;font-weight:800;color:var(--accent2);letter-spacing:.04em}
     .github-field input,.github-field select{width:100%;background:var(--input-bg);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:10px 11px;outline:none;min-height:42px}
     .github-help{font-size:11px;color:var(--muted);line-height:1.45;margin-top:5px}.github-help strong{color:var(--text)}
-    .file-browser{margin-top:12px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg2);max-height:42vh;overflow-y:auto}
-    .file-row{display:flex;align-items:center;gap:9px;padding:11px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+    .file-browser{margin-top:12px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2);max-height:42vh;overflow-y:auto}
+    .file-row{display:flex;align-items:center;gap:9px;padding:11px 12px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s}
     .file-row:last-child{border-bottom:0}.file-row:hover{background:var(--panel2)}
     .file-ico{width:25px;text-align:center}.file-main{min-width:0;flex:1}
     .file-main b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .file-main small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
     .github-breadcrumb{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:12px}
     .crumb{border:0;background:transparent;color:var(--accent2);padding:4px 2px;font-weight:800;min-height:auto}
-    .commit-summary{padding:12px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin:10px 0;font-size:12px;line-height:1.5}
+    .commit-summary{padding:12px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;margin:10px 0;font-size:12px;line-height:1.5}
     .commit-summary code{color:var(--accent2);word-break:break-all}
-    .security-note{padding:10px 12px;border:1px solid var(--security-border);background:var(--security-bg);border-radius:11px;color:var(--security-text);font-size:11px;line-height:1.45;margin-top:10px}
+    .security-note{padding:10px 12px;border:1px solid var(--security-border);background:var(--security-bg);border-radius:12px;color:var(--security-text);font-size:11px;line-height:1.45;margin-top:10px}
     .token-row{display:flex;gap:8px}.token-row input{flex:1}
     .github-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.github-actions .btn{flex:1;min-width:130px}
+
+    /* ===== Configurações ===== */
+    .settings-list{display:flex;flex-direction:column;gap:2px;margin-top:10px;max-height:60vh;overflow-y:auto}
+    .settings-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 4px;border-bottom:1px solid var(--line)}
+    .settings-row:last-child{border-bottom:0}
+    .settings-row b{display:block;font-size:13.5px;font-weight:700}
+    .settings-row small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+    .settings-row select{background:var(--input-bg);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:8px 10px;min-height:38px;outline:0}
+    .seg{display:inline-flex;background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:3px;gap:2px}
+    .seg-btn{border:0;background:transparent;color:var(--muted);font-weight:700;font-size:12px;padding:6px 12px;border-radius:8px;min-height:auto}
+    .seg-btn.active{background:var(--gradient);color:#fff;box-shadow:0 4px 12px rgba(139,92,246,.35)}
+    .switch{position:relative;display:inline-block;width:44px;height:26px;flex:none}
+    .switch input{opacity:0;width:0;height:0;position:absolute}
+    .switch-track{position:absolute;inset:0;background:var(--panel2);border:1px solid var(--line);border-radius:999px;transition:.15s;cursor:pointer}
+    .switch-track::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:2px;background:var(--muted);border-radius:50%;transition:.18s}
+    .switch input:checked+.switch-track{background:var(--gradient);border-color:transparent}
+    .switch input:checked+.switch-track::before{transform:translateX(18px);background:#fff}
+
+    /* ===== Explorador de arquivos ===== */
+    .files-actions-row{display:flex;gap:8px;margin-top:4px}
+    .tree-row{display:flex;align-items:center;gap:8px;padding:9px 10px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s}
+    .tree-row:hover{background:var(--panel2)}
+    .tree-row.active{background:var(--panel2);color:var(--accent2)}
+    .tree-row .file-ico{width:20px;text-align:center;font-size:13px}
+    .tree-row b{font-size:12.5px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .project-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+    .project-header b{font-size:12px;color:var(--accent2);letter-spacing:.03em}
 
     @media(max-width:850px){
       .ide-shell{grid-template-columns:44px minmax(0,1fr)}.side-rail{padding-left:4px;padding-right:4px}.rail-btn{width:34px;height:36px;min-height:36px}
@@ -149,7 +178,7 @@
 <div class="ide-shell">
   <aside class="side-rail" aria-label="Atalhos">
     <button class="rail-btn active" id="railCode" title="Código">&lt;/&gt;</button>
-    <button class="rail-btn" id="railFiles" title="Abrir arquivo">▢</button>
+    <button class="rail-btn" id="railFiles" title="Arquivos do projeto">▢</button>
     <button class="rail-btn" id="railSearch" title="Buscar">⌕</button>
     <button class="rail-btn" id="railSettings" title="Configurações">⚙</button>
     <button class="rail-btn rail-bottom" id="railInfo" title="Sobre">ⓘ</button>
@@ -159,6 +188,8 @@
     <div class="brand"><div class="logo"><img src="brenda-ide-logo.jpg" alt="Logo Brenda IDE"></div><div><div class="title">Brenda IDE</div><div class="sub" id="fileNameLabel">projeto.html • alterações só nesta sessão</div></div></div>
     <div class="top-actions">
       <label class="btn" for="fileInput">Abrir</label><input id="fileInput" type="file" accept=".html,.htm,.css,.js,.jsx,.mjs,.ts,.tsx,.json,.md,.markdown,.xml,.svg,.py,.php,.sql,.yml,.yaml,.sh,.c,.h,.cpp,.hpp,.java,.rb,.go,.rs,.txt">
+      <input id="folderInput" type="file" webkitdirectory directory multiple>
+      <button class="btn desktop-only" id="openFolderBtn" title="Abrir uma pasta completa do projeto">📁 <span>Pasta</span></button>
       <button class="btn desktop-only" id="newBtn">Novo</button>
       <button class="btn icon soft" id="themeToggle" title="Alternar tema claro/escuro">🌙</button>
       <button class="btn soft" id="githubBtn">◉ GitHub</button>
@@ -196,6 +227,29 @@
 
 <div class="toast" id="toast"></div>
 <div class="modal" id="newModal"><div class="card"><h3>Novo arquivo</h3><p>O editor será substituído por um HTML novo. Nada será salvo automaticamente.</p><div class="row"><button class="btn" id="cancelNew">Cancelar</button><button class="btn danger" id="confirmNew">Criar novo</button></div></div></div>
+
+<div class="modal" id="settingsModal"><div class="card">
+  <h3>Configurações</h3>
+  <div class="settings-list">
+    <div class="settings-row"><div><b>Tema</b><small>Aparência do app e do editor</small></div><div class="seg" id="themeSeg"><button class="seg-btn" data-theme-choice="dark">Escuro</button><button class="seg-btn" data-theme-choice="light">Claro</button></div></div>
+    <div class="settings-row"><div><b>Tamanho da fonte</b><small>Tamanho do texto no editor</small></div><select id="setFontSize"><option value="12">12px</option><option value="13">13px</option><option value="14">14px</option><option value="15">15px</option><option value="16">16px</option><option value="18">18px</option></select></div>
+    <div class="settings-row"><div><b>Tabulação</b><small>Espaços inseridos ao apertar Tab</small></div><select id="setTabSize"><option value="2">2 espaços</option><option value="4">4 espaços</option><option value="8">8 espaços</option></select></div>
+    <div class="settings-row"><div><b>Quebra de linha</b><small>Quebrar linhas longas automaticamente</small></div><label class="switch"><input type="checkbox" id="setWrap"><span class="switch-track"></span></label></div>
+    <div class="settings-row"><div><b>Números de linha</b><small>Mostrar numeração no editor</small></div><label class="switch"><input type="checkbox" id="setLineNumbers"><span class="switch-track"></span></label></div>
+    <div class="settings-row"><div><b>Fechar colchetes automaticamente</b><small>Fecha (), [], {} e aspas ao digitar</small></div><label class="switch"><input type="checkbox" id="setCloseBrackets"><span class="switch-track"></span></label></div>
+    <div class="settings-row"><div><b>Destacar linha atual</b><small>Realça a linha onde está o cursor</small></div><label class="switch"><input type="checkbox" id="setActiveLine"><span class="switch-track"></span></label></div>
+  </div>
+  <div class="row" style="margin-top:14px"><button class="btn" id="settingsReset">Restaurar padrões</button><button class="btn primary" id="settingsClose">Concluído</button></div>
+</div></div>
+
+<div class="modal" id="filesModal"><div class="card github-card">
+  <h3>Arquivos do projeto</h3>
+  <p id="filesEmptyHint">Abra um arquivo único ou uma pasta completa para navegar entre os arquivos — abrindo a pasta, o preview passa a resolver caminhos relativos entre HTML, CSS, JS e imagens.</p>
+  <div class="files-actions-row"><button class="btn" id="filesOpenFileBtn">📄 Abrir arquivo</button><button class="btn primary" id="filesOpenFolderBtn">📁 Abrir pasta</button></div>
+  <div class="project-header" id="projectHeader" style="display:none"><b id="projectName">Projeto</b><button class="btn danger" id="filesCloseProject" style="min-height:30px;padding:5px 10px">Fechar pasta</button></div>
+  <div class="file-browser" id="projectTree" style="display:none;margin-top:8px"></div>
+  <div class="row" style="margin-top:14px"><button class="btn" id="filesClose">Fechar</button></div>
+</div></div>
 <div class="modal" id="githubModal"><div class="card github-card">
   <h3>GitHub</h3>
   <div id="githubConnectionForm">
@@ -271,6 +325,131 @@ const LANG_MAP={
   txt:{mode:null,label:'Texto'}
 };
 function langInfoFor(name){const ext=(name||'').split('.').pop().toLowerCase();return LANG_MAP[ext]||{mode:'htmlmixed',label:'HTML'}}
+const BINARY_EXTS=new Set(['png','jpg','jpeg','gif','webp','ico','bmp','mp4','mp3','wav','ogg','pdf','zip','rar','7z','gz','tar','woff','woff2','ttf','otf','eot','psd','ai','exe','dll','so','class','wasm']);
+
+// ===== Configurações =====
+const DEFAULT_SETTINGS={fontSize:14,tabSize:2,wrap:true,lineNumbers:true,closeBrackets:true,activeLine:true};
+function loadSettings(){try{return {...DEFAULT_SETTINGS,...JSON.parse(localStorage.getItem('brendaide_settings')||'{}')}}catch{return {...DEFAULT_SETTINGS}}}
+let settings=loadSettings();
+function saveSettings(){localStorage.setItem('brendaide_settings',JSON.stringify(settings))}
+function applySettings(){
+  document.documentElement.style.setProperty('--cm-font-size',settings.fontSize+'px');
+  if(window.cm){
+    cm.setOption('tabSize',settings.tabSize);cm.setOption('indentUnit',settings.tabSize);
+    cm.setOption('lineWrapping',settings.wrap);cm.setOption('lineNumbers',settings.lineNumbers);
+    cm.setOption('autoCloseBrackets',settings.closeBrackets);cm.setOption('styleActiveLine',settings.activeLine);
+    cm.refresh();
+  }
+}
+function syncSettingsUI(){
+  $('setFontSize').value=settings.fontSize;$('setTabSize').value=settings.tabSize;
+  $('setWrap').checked=settings.wrap;$('setLineNumbers').checked=settings.lineNumbers;
+  $('setCloseBrackets').checked=settings.closeBrackets;$('setActiveLine').checked=settings.activeLine;
+  document.querySelectorAll('#themeSeg .seg-btn').forEach(b=>b.classList.toggle('active',b.dataset.themeChoice===document.documentElement.getAttribute('data-theme')));
+}
+
+// ===== Projeto (pasta completa) =====
+let projectFiles=new Map(),projectRoot='',activeFilePath=null,dynamicBlobUrls=[];
+function resolvePath(baseDir,rel){
+  rel=(rel||'').split('?')[0].split('#')[0];
+  if(!rel)return rel;
+  const relParts=(rel.startsWith('/')?rel.slice(1):rel).split('/');
+  let stack=baseDir?baseDir.split('/'):[];
+  relParts.forEach(part=>{if(part===''||part==='.')return;if(part==='..')stack.pop();else stack.push(part)});
+  return stack.join('/');
+}
+function saveActiveFileBuffer(){if(activeFilePath&&projectFiles.has(activeFilePath))projectFiles.get(activeFilePath).text=cm.getValue()}
+function rewriteAssetUrl(baseDir,raw){
+  if(!raw||/^(https?:)?\/\//i.test(raw)||/^(data|blob|mailto|tel|javascript):/i.test(raw)||raw.startsWith('#'))return null;
+  const resolved=resolvePath(baseDir,raw);
+  const asset=projectFiles.get(resolved);
+  if(!asset)return null;
+  if(/\.css$/i.test(resolved))return buildCssBlobUrl(resolved);
+  if(asset.blobUrl)return asset.blobUrl;
+  if(asset.isText){const url=URL.createObjectURL(new Blob([asset.text],{type:'text/plain'}));dynamicBlobUrls.push(url);return url}
+  return null;
+}
+function buildCssBlobUrl(path){
+  const asset=projectFiles.get(path);if(!asset)return null;
+  const baseDir=path.includes('/')?path.slice(0,path.lastIndexOf('/')):'';
+  const css=asset.text.replace(/url\(\s*(['"]?)(.*?)\1\s*\)/gi,(m,q,url)=>{const rw=rewriteAssetUrl(baseDir,url.trim());return rw?'url("'+rw+'")':m});
+  const blobUrl=URL.createObjectURL(new Blob([css],{type:'text/css'}));dynamicBlobUrls.push(blobUrl);return blobUrl;
+}
+function buildPreviewHtml(path){
+  const entry=projectFiles.get(path);if(!entry)return '';
+  const baseDir=path.includes('/')?path.slice(0,path.lastIndexOf('/')):'';
+  dynamicBlobUrls.forEach(u=>URL.revokeObjectURL(u));dynamicBlobUrls.length=0;
+  let html=entry.text;
+  html=html.replace(/(<link\b[^>]*?\bhref\s*=\s*)(["'])(.*?)\2/gi,(m,pre,q,url)=>{const rw=rewriteAssetUrl(baseDir,url);return rw?pre+q+rw+q:m});
+  html=html.replace(/(\ssrc\s*=\s*)(["'])(.*?)\2/gi,(m,pre,q,url)=>{const rw=rewriteAssetUrl(baseDir,url);return rw?pre+q+rw+q:m});
+  return html;
+}
+function clearProject(){projectFiles.forEach(f=>{if(f.blobUrl)URL.revokeObjectURL(f.blobUrl)});projectFiles.clear();activeFilePath=null;projectRoot=''}
+async function handleFolderFiles(fileList){
+  const files=Array.from(fileList).filter(f=>{const rp=f.webkitRelativePath||f.name;return !/(^|\/)(node_modules|\.git)(\/|$)/.test(rp)});
+  if(!files.length){toast('Pasta vazia ou sem arquivos suportados');return}
+  const rootName=(files[0].webkitRelativePath||files[0].name).split('/')[0];
+  clearProject();
+  for(const file of files){
+    const rp=file.webkitRelativePath||file.name;
+    const rel=rp.includes('/')?rp.split('/').slice(1).join('/'):rp;
+    if(!rel)continue;
+    const ext=rel.split('.').pop().toLowerCase();
+    const entry={name:rel.split('/').pop(),path:rel,isText:!BINARY_EXTS.has(ext)&&file.size<3*1024*1024};
+    if(entry.isText){try{entry.text=await file.text()}catch{entry.isText=false;entry.blobUrl=URL.createObjectURL(file)}}
+    else entry.blobUrl=URL.createObjectURL(file);
+    projectFiles.set(rel,entry);
+  }
+  projectRoot=rootName;
+  renderProjectTree();
+  const keys=[...projectFiles.keys()];
+  const openPath=keys.find(k=>k.toLowerCase()==='index.html')||keys.find(k=>/(^|\/)index\.html$/i.test(k))||keys.find(k=>/\.html?$/i.test(k))||keys.find(k=>projectFiles.get(k).isText);
+  toast('Pasta aberta: '+keys.length+' arquivo(s)');
+  if(openPath){openProjectFile(openPath);filesModal.classList.remove('show')}else{filesModal.classList.add('show')}
+}
+function openProjectFile(path){
+  const f=projectFiles.get(path);
+  if(!f){toast('Arquivo não encontrado');return}
+  if(!f.isText){toast('Não é possível editar arquivos binários (ex: imagens)');return}
+  saveActiveFileBuffer();
+  activeFilePath=path;
+  cm.setValue(f.text);
+  setFileName(path.split('/').pop(),path);
+  saveStatus.textContent='somente na IDE';
+  render();
+  document.querySelectorAll('#projectTree .tree-row').forEach(r=>r.classList.toggle('active',r.dataset.path===path));
+}
+function renderProjectTree(){
+  const box=$('projectTree'),hint=$('filesEmptyHint'),header=$('projectHeader');
+  if(!projectFiles.size){box.style.display='none';box.innerHTML='';header.style.display='none';hint.style.display='block';return}
+  hint.style.display='none';header.style.display='flex';box.style.display='block';
+  $('projectName').textContent='📁 '+projectRoot+' ('+projectFiles.size+' arquivos)';
+  const root={};
+  [...projectFiles.keys()].sort().forEach(p=>{
+    const parts=p.split('/');let node=root;
+    parts.forEach((part,i)=>{if(i===parts.length-1){node.__files=node.__files||[];node.__files.push({name:part,path:p})}else{node[part]=node[part]||{};node=node[part]}});
+  });
+  box.innerHTML='';
+  (function walk(node,container,depth){
+    Object.keys(node).filter(k=>k!=='__files').sort((a,b)=>a.localeCompare(b)).forEach(folderName=>{
+      const row=document.createElement('div');row.className='tree-row';row.style.paddingLeft=(10+depth*16)+'px';
+      row.innerHTML='<span class="file-ico">📁</span><b></b>';row.querySelector('b').textContent=folderName;
+      const childWrap=document.createElement('div');
+      row.onclick=()=>{childWrap.style.display=childWrap.style.display==='none'?'block':'none'};
+      container.appendChild(row);container.appendChild(childWrap);
+      walk(node[folderName],childWrap,depth+1);
+    });
+    (node.__files||[]).sort((a,b)=>a.name.localeCompare(b.name)).forEach(f=>{
+      const row=document.createElement('div');row.className='tree-row';row.dataset.path=f.path;row.style.paddingLeft=(10+depth*16)+'px';
+      const ext=f.name.split('.').pop().toLowerCase();
+      row.innerHTML='<span class="file-ico">'+(BINARY_EXTS.has(ext)?'🖼':(LANG_MAP[ext]?'📄':'🗂'))+'</span><b></b>';
+      row.querySelector('b').textContent=f.name;
+      row.onclick=()=>{openProjectFile(f.path);filesModal.classList.remove('show')};
+      if(f.path===activeFilePath)row.classList.add('active');
+      container.appendChild(row);
+    });
+  })(root,box,0);
+}
 
 // ===== Tema claro/escuro =====
 function cmThemeFor(t){return t==='dark'?'dracula':'eclipse'}
@@ -280,6 +459,7 @@ function applyTheme(t){
   $('themeToggle').textContent=t==='dark'?'🌙':'☀';
   $('themeColorMeta').setAttribute('content',t==='dark'?'#100a1e':'#faf8ff');
   if(window.cm)cm.setOption('theme',cmThemeFor(t));
+  document.querySelectorAll('#themeSeg .seg-btn').forEach(b=>b.classList.toggle('active',b.dataset.themeChoice===t));
 }
 $('themeToggle').onclick=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
 
@@ -300,20 +480,24 @@ const cm=CodeMirror.fromTextArea(taEditor,{
 });
 window.cm=cm;
 applyTheme(localStorage.getItem('brendaide_theme')||'dark');
+applySettings();
 
-function setFileName(name){
-  currentFileName=(name||'projeto.html').trim();
-  if(!/\.[a-z0-9]+$/i.test(currentFileName))currentFileName+='.html';
-  currentLang=langInfoFor(currentFileName);
+function setFileName(name,fullPath){
+  let base=(name||'projeto.html').trim();
+  if(!fullPath&&!/\.[a-z0-9]+$/i.test(base))base+='.html';
+  currentFileName=base;
+  currentLang=langInfoFor(base);
   cm.setOption('mode',currentLang.mode);
   langPill.textContent=currentLang.label;
-  fileNameLabel.textContent=currentFileName+' • alterações só nesta sessão';
-  fileNameInput.value=currentFileName;
+  const displayPath=fullPath||base;
+  fileNameLabel.textContent=displayPath+(fullPath?' • pasta: '+projectRoot:' • alterações só nesta sessão');
+  fileNameInput.value=base;
 }
 function stats(){const v=cm.getValue();charCount.textContent=v.length.toLocaleString('pt-BR')+' caracteres';const lines=cm.lineCount();lineBadge.textContent=lines+(lines===1?' linha':' linhas')}
 function render(){
+  if(activeFilePath)saveActiveFileBuffer();
   const v=cm.getValue();
-  if(currentLang.preview){preview.srcdoc=v}
+  if(currentLang.preview){preview.srcdoc=activeFilePath?buildPreviewHtml(activeFilePath):v}
   else{const esc=v.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');preview.srcdoc='<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:18px;background:#fff;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.55;color:#1a1a1a;white-space:pre-wrap;word-break:break-word}</style></head><body>'+esc+'</body></html>'}
   stats();
 }
@@ -323,7 +507,10 @@ function backupIde(){setFileName(fileNameInput.value);const backup={app:'Brenda 
 function simpleFormatHTML(src){let out='',indent=0;const tokens=src.replace(/>\s*</g,'>\n<').split('\n');const voidTag=/^<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)\b/i;tokens.forEach(raw=>{const s=raw.trim();if(!s)return;if(/^<\//.test(s))indent=Math.max(0,indent-1);out+='  '.repeat(indent)+s+'\n';if(/^<[^!/][^>]*>/.test(s)&&!/^<\//.test(s)&&!voidTag.test(s)&&!/>.*<\//.test(s)&&!/<\/$/.test(s)&&!s.endsWith('/>'))indent++});return out.trimEnd()}
 const tempUpdate=sessionStorage.getItem('brendaide_update_temp');if(tempUpdate){try{const t=JSON.parse(tempUpdate);cm.setValue(t.code||starter);currentFileName=t.filename||'projeto.html'}catch{cm.setValue(starter)}sessionStorage.removeItem('brendaide_update_temp')}else{cm.setValue(starter)}setFileName(currentFileName);render();
 cm.on('change',scheduleUpdate);fileNameInput.addEventListener('change',()=>{setFileName(fileNameInput.value);render()});
-fileInput.addEventListener('change',async()=>{const file=fileInput.files?.[0];if(!file)return;cm.setValue(await file.text());setFileName(file.name);saveStatus.textContent='somente na IDE';render();toast('Arquivo aberto');fileInput.value=''});
+fileInput.addEventListener('change',async()=>{const file=fileInput.files?.[0];if(!file)return;clearProject();renderProjectTree();cm.setValue(await file.text());setFileName(file.name);saveStatus.textContent='somente na IDE';render();toast('Arquivo aberto');fileInput.value=''});
+const folderInput=$('folderInput');
+folderInput.addEventListener('change',()=>{if(folderInput.files.length)handleFolderFiles(folderInput.files);folderInput.value=''});
+$('openFolderBtn').onclick=()=>folderInput.click();
 $('backupBtn').onclick=backupIde;
 $('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(cm.getValue());toast('Código copiado')}catch{cm.execCommand('selectAll');document.execCommand('copy');toast('Código copiado')}};
 $('formatBtn').onclick=()=>{if(currentLang.mode!=='htmlmixed'&&currentLang.mode!=='xml'){toast('Formatar disponível para HTML/XML');return}cm.setValue(simpleFormatHTML(cm.getValue()));saveStatus.textContent='somente na IDE';render();toast('HTML formatado')};
@@ -337,7 +524,7 @@ $('findBtn').onclick=()=>{
 $('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('findBtn').click()});
 $('fullPreviewBtn').onclick=()=>{const blob=new Blob([cm.getValue()],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),win=window.open(url,'_blank');if(!win)toast('Permita pop-ups para o preview');setTimeout(()=>URL.revokeObjectURL(url),60000)};
 document.querySelectorAll('[data-size]').forEach(b=>b.onclick=()=>{previewShell.className='preview-shell '+b.dataset.size;toast('Preview: '+({phone:'celular',tablet:'tablet',desktop:'desktop'}[b.dataset.size]))});
-const newModal=$('newModal');$('newBtn').onclick=()=>newModal.classList.add('show');$('cancelNew').onclick=()=>newModal.classList.remove('show');$('confirmNew').onclick=()=>{cm.setValue(starter);setFileName('projeto.html');saveStatus.textContent='somente na IDE';render();newModal.classList.remove('show');toast('Novo arquivo criado')};
+const newModal=$('newModal');$('newBtn').onclick=()=>newModal.classList.add('show');$('cancelNew').onclick=()=>newModal.classList.remove('show');$('confirmNew').onclick=()=>{clearProject();renderProjectTree();cm.setValue(starter);setFileName('projeto.html');saveStatus.textContent='somente na IDE';render();newModal.classList.remove('show');toast('Novo arquivo criado')};
 document.querySelectorAll('[data-tab]').forEach(btn=>btn.onclick=()=>{const tab=btn.dataset.tab;$('editorPane').classList.toggle('active',tab==='editor');$('previewPane').classList.toggle('active',tab==='preview');if(tab==='editor')setTimeout(()=>cm.refresh(),0)});
 window.addEventListener('resize',()=>cm.refresh());
 $('updateBtn').onclick=async()=>{const btn=$('updateBtn');btn.disabled=true;btn.textContent='Atualizando…';try{sessionStorage.setItem('brendaide_update_temp',JSON.stringify({filename:currentFileName,code:cm.getValue()}));if('serviceWorker'in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update();}const url=new URL(location.href);url.searchParams.set('_v',Date.now());location.replace(url.toString())}catch(e){sessionStorage.removeItem('brendaide_update_temp');btn.disabled=false;btn.textContent='↻ Atualizar';toast('Não foi possível atualizar')}};
@@ -355,7 +542,7 @@ async function ghConnect(){ghToken=$('ghToken').value.trim();if(!ghToken){toast(
 async function ghLoadRepos(){const repos=await ghApi('/user/repos?per_page=100&sort=updated&affiliation=owner,collaborator,organization_member');const sel=$('ghRepo');sel.innerHTML='';repos.filter(r=>r.permissions&&r.permissions.push).forEach(r=>{const o=document.createElement('option');o.value=r.full_name;o.textContent=r.full_name;o.dataset.branch=r.default_branch||'main';sel.appendChild(o)});if(sel.options.length){ghCurrentRepo=sel.value;ghCurrentBranch=sel.selectedOptions[0].dataset.branch;$('ghBranch').value=ghCurrentBranch;await ghBrowse('')}}
 async function ghBrowse(dir=''){if(!ghCurrentRepo)return;ghCurrentDir=dir;const branch=$('ghBranch').value.trim()||'main';ghCurrentBranch=branch;const data=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(dir)+'?ref='+encodeURIComponent(branch));const arr=Array.isArray(data)?data:[data];arr.sort((a,b)=>(a.type===b.type? a.name.localeCompare(b.name):a.type==='dir'?-1:1));const box=$('ghFiles');box.innerHTML='';arr.forEach(item=>{const row=document.createElement('div');row.className='file-row';row.innerHTML='<div class="file-ico">'+(item.type==='dir'?'📁':'📄')+'</div><div class="file-main"><b></b><small></small></div>';row.querySelector('b').textContent=item.name;row.querySelector('small').textContent=item.type==='dir'?'Pasta':(item.size||0).toLocaleString('pt-BR')+' bytes';row.onclick=()=>item.type==='dir'?ghBrowse(item.path):ghOpenFile(item);box.appendChild(row)});ghRenderBreadcrumb();}
 function ghRenderBreadcrumb(){const b=$('ghBreadcrumb');b.innerHTML='';const root=document.createElement('button');root.className='crumb';root.textContent='⌂ raiz';root.onclick=()=>ghBrowse('');b.appendChild(root);let acc='';ghCurrentDir.split('/').filter(Boolean).forEach(p=>{acc+=(acc?'/':'')+p;const btn=document.createElement('button');btn.className='crumb';btn.textContent='› '+p;const target=acc;btn.onclick=()=>ghBrowse(target);b.appendChild(btn)})}
-async function ghOpenFile(item){if(!/\.(html?|css|jsx?|mjs|tsx?|json|md|markdown|xml|svg|py|php|sql|ya?ml|sh|c|h|cpp|hpp|java|rb|go|rs|txt)$/i.test(item.name)){toast('Por segurança, a v3 abre arquivos de texto/código');return}try{const data=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(item.path)+'?ref='+encodeURIComponent(ghCurrentBranch));cm.setValue(b64ToUtf8(data.content));ghCurrentPath=item.path;ghCurrentSha=data.sha;setFileName(item.name);saveStatus.textContent='somente na IDE';render();$('commitBtn').disabled=false;ghModal.classList.remove('show');toast('Aberto do GitHub: '+item.name)}catch(e){toast(e.message)}}
+async function ghOpenFile(item){if(!/\.(html?|css|jsx?|mjs|tsx?|json|md|markdown|xml|svg|py|php|sql|ya?ml|sh|c|h|cpp|hpp|java|rb|go|rs|txt)$/i.test(item.name)){toast('Por segurança, a v3 abre arquivos de texto/código');return}try{const data=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(item.path)+'?ref='+encodeURIComponent(ghCurrentBranch));clearProject();renderProjectTree();cm.setValue(b64ToUtf8(data.content));ghCurrentPath=item.path;ghCurrentSha=data.sha;setFileName(item.name);saveStatus.textContent='somente na IDE';render();$('commitBtn').disabled=false;ghModal.classList.remove('show');toast('Aberto do GitHub: '+item.name)}catch(e){toast(e.message)}}
 function ghOpenCommit(){if(!ghToken||!ghCurrentRepo||!ghCurrentPath){toast('Abra um arquivo do GitHub primeiro');return}$('commitRepo').textContent=ghCurrentRepo;$('commitBranch').textContent=ghCurrentBranch;$('commitPath').textContent=ghCurrentPath;$('commitMessage').value='Atualiza '+ghCurrentPath.split('/').pop();commitModal.classList.add('show')}
 async function ghCommit(){const msg=$('commitMessage').value.trim();if(!msg){toast('Digite a mensagem do commit');return}const btn=$('commitConfirm');btn.disabled=true;btn.textContent='Commitando…';try{const body={message:msg,content:utf8ToB64(cm.getValue()),branch:ghCurrentBranch};if(ghCurrentSha)body.sha=ghCurrentSha;const out=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(ghCurrentPath),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});ghCurrentSha=out.content.sha;commitModal.classList.remove('show');toast('Commit enviado com sucesso')}catch(e){toast(e.message)}finally{btn.disabled=false;btn.textContent='Commitar'}}
 $('githubBtn').onclick=async()=>{ghModal.classList.add('show');if(ghToken&&!ghUser){try{ghUser=await ghApi('/user');$('ghUserLabel').textContent='@'+ghUser.login;await ghLoadRepos();ghSetConnected(true)}catch{sessionStorage.removeItem('brendaide_gh_token');ghToken='';ghSetConnected(false)}}else ghSetConnected(!!ghToken)};
@@ -367,10 +554,26 @@ $('commitBtn').onclick=ghOpenCommit;$('commitCancel').onclick=()=>commitModal.cl
 
 
 $('railCode').onclick=()=>{cm.focus();toast('Editor')};
-$('railFiles').onclick=()=>fileInput.click();
+const filesModal=$('filesModal'),settingsModal=$('settingsModal');
+$('railFiles').onclick=()=>{filesModal.classList.add('show');renderProjectTree()};
 $('railSearch').onclick=()=>{$('searchInput').focus();toast('Buscar no código')};
-$('railSettings').onclick=()=>toast('Configurações: em breve');
-$('railInfo').onclick=()=>toast('Brenda IDE v3.3 • Minimal');
+$('railSettings').onclick=()=>{syncSettingsUI();settingsModal.classList.add('show')};
+$('railInfo').onclick=()=>toast('Brenda IDE v3.5 • Purple');
+
+$('filesOpenFileBtn').onclick=()=>{filesModal.classList.remove('show');fileInput.click()};
+$('filesOpenFolderBtn').onclick=()=>{filesModal.classList.remove('show');folderInput.click()};
+$('filesClose').onclick=()=>filesModal.classList.remove('show');
+$('filesCloseProject').onclick=()=>{clearProject();renderProjectTree();toast('Pasta fechada')};
+
+document.querySelectorAll('#themeSeg .seg-btn').forEach(b=>b.onclick=()=>applyTheme(b.dataset.themeChoice));
+$('setFontSize').onchange=e=>{settings.fontSize=+e.target.value;saveSettings();applySettings()};
+$('setTabSize').onchange=e=>{settings.tabSize=+e.target.value;saveSettings();applySettings()};
+$('setWrap').onchange=e=>{settings.wrap=e.target.checked;saveSettings();applySettings()};
+$('setLineNumbers').onchange=e=>{settings.lineNumbers=e.target.checked;saveSettings();applySettings()};
+$('setCloseBrackets').onchange=e=>{settings.closeBrackets=e.target.checked;saveSettings();applySettings()};
+$('setActiveLine').onchange=e=>{settings.activeLine=e.target.checked;saveSettings();applySettings()};
+$('settingsReset').onclick=()=>{settings={...DEFAULT_SETTINGS};saveSettings();applySettings();syncSettingsUI();toast('Configurações restauradas')};
+$('settingsClose').onclick=()=>settingsModal.classList.remove('show');
 
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>

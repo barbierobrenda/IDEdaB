@@ -28,9 +28,8 @@ Envie todos os arquivos deste ZIP para um repositório e habilite Settings → P
 - Rodapé e safe area do iPad em azul escuro, sem faixa branca.
 - Mantém GitHub, backup manual, preview e atualização.
 
-## v3.4 Purple Minimal
-- Identidade roxa, com tema claro e escuro (botão 🌙/☀ no cabeçalho, lembrado entre sessões).
-- Editor com realce de sintaxe colorido (CodeMirror), tema Dracula no modo escuro e Eclipse no modo claro.
-- Suporte a muito mais tipos de arquivo além de HTML: CSS, JS/JSX/TS/TSX, JSON, Markdown, XML/SVG, Python, PHP, SQL, YAML, Shell, C/C++, Java, Ruby, Go e Rust — tanto ao abrir do dispositivo quanto do GitHub.
-- A linguagem detectada aparece como uma etiqueta ao lado do título do editor.
-- Preview em tempo real continua específico para HTML/PHP; outros tipos aparecem formatados como texto no painel de preview.
+## v3.5 Purple Dashboard
+- Página de Configurações de verdade (⚙ na barra lateral): tema, tamanho da fonte do editor, tamanho da tabulação, quebra de linha, números de linha, fechamento automático de colchetes e destaque da linha atual — tudo salvo entre sessões.
+- Abertura de **pasta completa** do projeto (📁 Pasta no cabeçalho, ou pelo explorador de arquivos ▢ na barra lateral): navega em árvore de pastas/arquivos e troca entre eles mantendo as edições de cada um na memória da sessão.
+- Com uma pasta aberta, o **preview resolve os caminhos relativos de verdade**: `<link href="css/style.css">`, `<script src="js/app.js">`, `<img src="img/logo.png">` etc. — inclusive `url(...)` dentro do próprio CSS — passam a carregar os arquivos certos dentro da pasta.
+- Arquivos binários (imagens, fontes) ficam disponíveis para o preview mas não são abertos no editor de texto.
