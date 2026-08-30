@@ -216,7 +216,6 @@
       <input class="filename-input" id="fileNameInput" value="projeto.html" aria-label="Nome do arquivo">
       <button class="btn" id="copyBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg> <span>Copiar</span></button>
       <button class="btn" id="formatBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="18" y2="18"/></svg> <span>Formatar</span></button>
-      <button class="btn" id="backupBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg> <span>Backup</span></button>
       <button class="btn" id="zipBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9"/><path d="M10 13h4"/></svg> <span>Baixar .zip</span></button>
       <button class="btn primary" id="commitBtn" disabled><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 0 1-1-8.9A5 5 0 0 1 16 7.5 4.5 4.5 0 0 1 17 18H7Z"/><path d="M12 12v6"/><path d="m9.5 14.5 2.5-2.5 2.5 2.5"/></svg> <span>Commitar</span></button>
     </div>
@@ -236,7 +235,7 @@
     </section>
   </main>
 
-  <footer><span>⌘/Ctrl + S salva • ⌘/Ctrl + F busca</span><span id="charCount">0 caracteres</span></footer>
+  <footer><span>⌘/Ctrl + S baixa .zip • ⌘/Ctrl + F busca</span><span id="charCount">0 caracteres</span></footer>
 </div>
   </div>
 </div>
@@ -290,7 +289,7 @@
 
 <div class="modal" id="commitModal"><div class="card github-card">
   <h3>Confirmar commit</h3>
-  <p>O commit só será enviado quando você confirmar. Se quiser uma cópia local antes, use o botão Backup.</p>
+  <p>O commit só será enviado quando você confirmar. Se quiser uma cópia local antes, use o botão "Baixar .zip".</p>
   <div class="commit-summary">Repositório: <code id="commitRepo">—</code><br>Branch: <code id="commitBranch">—</code><br>Arquivo: <code id="commitPath">—</code></div>
   <div class="github-field full"><label>Mensagem do commit</label><input id="commitMessage" placeholder="Ex.: Ajusta tela inicial do Dental Tech"></div>
   <div class="security-note">Somente uma conta/token com permissão de escrita nesse repositório consegue concluir este commit.</div>
@@ -416,14 +415,15 @@ function clearProject(){projectFiles.forEach(f=>{if(f.blobUrl)URL.revokeObjectUR
 async function handleFolderFiles(fileList){
   const files=Array.from(fileList).filter(f=>{const rp=f.webkitRelativePath||f.name;return !/(^|\/)(node_modules|\.git)(\/|$)/.test(rp)});
   if(!files.length){toast('Pasta vazia ou sem arquivos suportados');return}
-  const rootName=(files[0].webkitRelativePath||files[0].name).split('/')[0];
+  const isRealFolder=files.every(f=>!!f.webkitRelativePath);
+  const rootName=isRealFolder?files[0].webkitRelativePath.split('/')[0]:'';
   clearProject();
   for(const file of files){
     const rp=file.webkitRelativePath||file.name;
-    const rel=rp.includes('/')?rp.split('/').slice(1).join('/'):rp;
+    const rel=isRealFolder?rp.split('/').slice(1).join('/'):rp;
     if(!rel)continue;
     const ext=rel.split('.').pop().toLowerCase();
-    const entry={name:rel.split('/').pop(),path:rel,isText:!BINARY_EXTS.has(ext)&&file.size<3*1024*1024,fromFolder:true};
+    const entry={name:rel.split('/').pop(),path:rel,isText:!BINARY_EXTS.has(ext)&&file.size<3*1024*1024,fromFolder:isRealFolder};
     if(entry.isText){try{entry.text=await file.text();entry.file=file}catch{entry.isText=false;entry.file=file;entry.blobUrl=URL.createObjectURL(file)}}
     else{entry.file=file;entry.blobUrl=URL.createObjectURL(file)}
     projectFiles.set(rel,entry);
@@ -432,7 +432,8 @@ async function handleFolderFiles(fileList){
   renderProjectTree();
   const keys=[...projectFiles.keys()];
   const openPath=keys.find(k=>k.toLowerCase()==='index.html')||keys.find(k=>/(^|\/)index\.html$/i.test(k))||keys.find(k=>/\.html?$/i.test(k))||keys.find(k=>projectFiles.get(k).isText);
-  toast('Pasta aberta: '+keys.length+' arquivo(s)');
+  if(isRealFolder)toast('Pasta aberta: '+keys.length+' arquivo(s)');
+  else toast('Seu navegador não permite selecionar uma pasta inteira — '+keys.length+' arquivo(s) aberto(s) individualmente');
   if(openPath){openTab(openPath);filesModal.classList.remove('show')}else{filesModal.classList.add('show')}
 }
 
@@ -496,7 +497,8 @@ function renderProjectTree(){
       const row=document.createElement('div');row.className='tree-row';row.style.paddingLeft=(10+depth*16)+'px';
       row.innerHTML='<span class="file-ico">📁</span><b></b>';row.querySelector('b').textContent=folderName;
       const childWrap=document.createElement('div');
-      row.onclick=()=>{childWrap.style.display=childWrap.style.display==='none'?'block':'none'};
+      childWrap.style.display='block';
+      row.onclick=()=>{childWrap.style.display=childWrap.style.display==='block'?'none':'block'};
       container.appendChild(row);container.appendChild(childWrap);
       walk(node[folderName],childWrap,depth+1);
     });
@@ -605,7 +607,7 @@ const cm=CodeMirror.fromTextArea(taEditor,{
   matchBrackets:true,autoCloseBrackets:true,styleActiveLine:true,viewportMargin:500,
   extraKeys:{
     'Tab':cm=>cm.replaceSelection('  ','end'),
-    'Cmd-S':()=>{backupIde();return false},'Ctrl-S':()=>{backupIde();return false},
+    'Cmd-S':()=>{downloadProjectZip();return false},'Ctrl-S':()=>{downloadProjectZip();return false},
     'Cmd-F':()=>{$('searchInput').focus();return false},'Ctrl-F':()=>{$('searchInput').focus();return false}
   }
 });
@@ -642,7 +644,6 @@ function render(){
 }
 function scheduleUpdate(){saveStatus.textContent='somente na IDE';clearTimeout(updateTimer);updateTimer=setTimeout(()=>{render()},180)}
 function download(content,name,type='text/html;charset=utf-8'){const blob=(content instanceof Blob)?content:new Blob([content],{type});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200)}
-function backupIde(){setFileName(fileNameInput.value);const backup={app:'Brenda IDE',version:'3.7',date:new Date().toISOString(),filename:currentFileName,code:cm.getValue()};const stamp=new Date().toISOString().replace(/[:.]/g,'-');download(JSON.stringify(backup,null,2),'BrendaIDE_Backup_'+stamp+'.json','application/json');saveStatus.textContent='backup baixado';toast('Backup baixado')}
 async function downloadProjectZip(){
   saveActiveFileBuffer();
   if(typeof JSZip==='undefined'){toast('Não foi possível carregar o gerador de ZIP');return}
@@ -695,7 +696,6 @@ fileInput.addEventListener('change',async()=>{const file=fileInput.files?.[0];if
 const folderInput=$('folderInput');
 folderInput.addEventListener('change',()=>{if(folderInput.files.length)handleFolderFiles(folderInput.files);folderInput.value=''});
 $('openFolderBtn').onclick=()=>folderInput.click();
-$('backupBtn').onclick=backupIde;
 $('zipBtn').onclick=downloadProjectZip;
 $('filesDownloadZip').onclick=downloadProjectZip;
 $('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(cm.getValue());toast('Código copiado')}catch{cm.execCommand('selectAll');document.execCommand('copy');toast('Código copiado')}};
