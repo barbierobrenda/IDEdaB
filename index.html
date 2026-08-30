@@ -186,7 +186,13 @@
     @media(max-width:620px){.side-rail{display:none}.ide-shell{grid-template-columns:1fr}}
     @media(max-width:560px){.title{font-size:14px}.sub{max-width:44vw}.top-actions .btn{padding:8px 9px}.toolbar-actions .btn span{display:none}.search-wrap{min-width:180px}.filename-input{width:130px}}
     @media(max-width:620px){.github-grid{grid-template-columns:1fr}.github-field.full{grid-column:auto}.github-card{padding:15px}.github-actions .btn{min-width:110px}}
-  </style>
+  
+/* Correção de interação: garante que nenhuma camada do preview capture os cliques da interface */
+header,.side-rail,.pane-head,.tab-strip,.preview-tools,.btn,.rail-btn,.modal{position:relative;z-index:100;pointer-events:auto!important;touch-action:manipulation}
+.workspace{position:relative;z-index:1}
+.preview-stage,.preview-shell,iframe{position:relative;z-index:1}
+.modal{z-index:1000}
+</style>
 </head>
 <body>
 <div class="ide-shell">
@@ -518,7 +524,31 @@ function renderProjectTree(){
 // ===== Preview estendido (HTML, PHP, CSS, JS, JSON, Markdown, SVG, texto) =====
 function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function buildTextPreview(v){
-  return '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:18px;background:#fff;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.55;color:#1a1a1a;white-space:pre-wrap;word-break:break-word}</style></head><body>'+escapeHtml(v)+'</body></html>';
+  return '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:18px;background:#fff;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.55;color:#1a1a1a;white-space:pre-wrap;word-break:break-word}</style></head><body>'+escapeHtml(v)+'
+<script>
+/* Camada de segurança para cliques/touch: mantém os controles ativos mesmo em navegadores móveis. */
+(function(){
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('button,[data-size],[data-tab]'); if(!b) return;
+    const id=b.id;
+    try{
+      if(id==='runBtn'&&typeof render==='function'){render(); if(typeof toast==='function')toast('Preview executado');}
+      if(id==='zipBtn'&&typeof downloadProjectZip==='function')downloadProjectZip();
+      if(id==='copyBtn'&&window.cm){navigator.clipboard?.writeText(cm.getValue()).then(()=>toast?.('Código copiado')).catch(()=>{cm.execCommand('selectAll');document.execCommand('copy');toast?.('Código copiado')});}
+      if(id==='newBtn')document.getElementById('newModal')?.classList.add('show');
+      if(id==='cancelNew')document.getElementById('newModal')?.classList.remove('show');
+      if(id==='filesOpenFileBtn')document.getElementById('fileInput')?.click();
+      if(id==='filesOpenFolderBtn'||id==='openFolderBtn')document.getElementById('folderInput')?.click();
+      if(id==='githubBtn')document.getElementById('githubModal')?.classList.add('show');
+      if(id==='railFiles')document.getElementById('filesModal')?.classList.add('show');
+      if(id==='railSettings')document.getElementById('settingsModal')?.classList.add('show');
+      if(id==='filesClose')document.getElementById('filesModal')?.classList.remove('show');
+      if(id==='settingsClose')document.getElementById('settingsModal')?.classList.remove('show');
+    }catch(err){console.error('Brenda IDE click fallback',err)}
+  },true);
+})();
+</script>
+</body></html>';
 }
 function buildPhpBestEffortHtml(v){
   // PHP precisa de um servidor PHP real para executar. Para arquivos com HTML misturado,
@@ -526,14 +556,86 @@ function buildPhpBestEffortHtml(v){
   const hasHtml=/<\/?[a-z][\s\S]*>/i.test(v);
   const body=hasHtml?v.replace(/<\?(?:php|=)?[\s\S]*?\?>/gi,'<div style="padding:10px;border:1px dashed #a78bfa;margin:8px 0;color:#6d28d9;font:12px system-ui">Bloco PHP — para executar de verdade, abra este projeto em um servidor PHP.</div>'):
     '<pre style="margin:0;padding:18px;white-space:pre-wrap;word-break:break-word">'+escapeHtml(v)+'</pre>';
-  return '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#fff;color:#1a1a2e;font:14px/1.55 system-ui}.note{padding:12px;background:#fff7ed;border-bottom:1px solid #fed7aa;color:#9a3412;font:12px system-ui}</style></head><body><div class="note">Preview PHP: o navegador não executa PHP sozinho. HTML/CSS pode ser visualizado; PHP real requer servidor (PHP/Apache/Nginx).</div>'+body+'</body></html>';
+  return '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#fff;color:#1a1a2e;font:14px/1.55 system-ui}.note{padding:12px;background:#fff7ed;border-bottom:1px solid #fed7aa;color:#9a3412;font:12px system-ui}</style></head><body><div class="note">Preview PHP: o navegador não executa PHP sozinho. HTML/CSS pode ser visualizado; PHP real requer servidor (PHP/Apache/Nginx).</div>'+body+'
+<script>
+/* Camada de segurança para cliques/touch: mantém os controles ativos mesmo em navegadores móveis. */
+(function(){
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('button,[data-size],[data-tab]'); if(!b) return;
+    const id=b.id;
+    try{
+      if(id==='runBtn'&&typeof render==='function'){render(); if(typeof toast==='function')toast('Preview executado');}
+      if(id==='zipBtn'&&typeof downloadProjectZip==='function')downloadProjectZip();
+      if(id==='copyBtn'&&window.cm){navigator.clipboard?.writeText(cm.getValue()).then(()=>toast?.('Código copiado')).catch(()=>{cm.execCommand('selectAll');document.execCommand('copy');toast?.('Código copiado')});}
+      if(id==='newBtn')document.getElementById('newModal')?.classList.add('show');
+      if(id==='cancelNew')document.getElementById('newModal')?.classList.remove('show');
+      if(id==='filesOpenFileBtn')document.getElementById('fileInput')?.click();
+      if(id==='filesOpenFolderBtn'||id==='openFolderBtn')document.getElementById('folderInput')?.click();
+      if(id==='githubBtn')document.getElementById('githubModal')?.classList.add('show');
+      if(id==='railFiles')document.getElementById('filesModal')?.classList.add('show');
+      if(id==='railSettings')document.getElementById('settingsModal')?.classList.add('show');
+      if(id==='filesClose')document.getElementById('filesModal')?.classList.remove('show');
+      if(id==='settingsClose')document.getElementById('settingsModal')?.classList.remove('show');
+    }catch(err){console.error('Brenda IDE click fallback',err)}
+  },true);
+})();
+</script>
+</body></html>';
 }
 function buildSvgPreview(v){
-  return '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0}</style></head><body><div style="display:grid;place-items:center;min-height:100vh;background:#fff;padding:16px;box-sizing:border-box">'+v+'</div></body></html>';
+  return '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0}</style></head><body><div style="display:grid;place-items:center;min-height:100vh;background:#fff;padding:16px;box-sizing:border-box">'+v+'</div>
+<script>
+/* Camada de segurança para cliques/touch: mantém os controles ativos mesmo em navegadores móveis. */
+(function(){
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('button,[data-size],[data-tab]'); if(!b) return;
+    const id=b.id;
+    try{
+      if(id==='runBtn'&&typeof render==='function'){render(); if(typeof toast==='function')toast('Preview executado');}
+      if(id==='zipBtn'&&typeof downloadProjectZip==='function')downloadProjectZip();
+      if(id==='copyBtn'&&window.cm){navigator.clipboard?.writeText(cm.getValue()).then(()=>toast?.('Código copiado')).catch(()=>{cm.execCommand('selectAll');document.execCommand('copy');toast?.('Código copiado')});}
+      if(id==='newBtn')document.getElementById('newModal')?.classList.add('show');
+      if(id==='cancelNew')document.getElementById('newModal')?.classList.remove('show');
+      if(id==='filesOpenFileBtn')document.getElementById('fileInput')?.click();
+      if(id==='filesOpenFolderBtn'||id==='openFolderBtn')document.getElementById('folderInput')?.click();
+      if(id==='githubBtn')document.getElementById('githubModal')?.classList.add('show');
+      if(id==='railFiles')document.getElementById('filesModal')?.classList.add('show');
+      if(id==='railSettings')document.getElementById('settingsModal')?.classList.add('show');
+      if(id==='filesClose')document.getElementById('filesModal')?.classList.remove('show');
+      if(id==='settingsClose')document.getElementById('settingsModal')?.classList.remove('show');
+    }catch(err){console.error('Brenda IDE click fallback',err)}
+  },true);
+})();
+</script>
+</body></html>';
 }
 function buildCssDemoPreview(v){
   const demo='<div class="demo-wrap"><h1>Heading H1</h1><h2>Heading H2</h2><p>Parágrafo de exemplo para testar tipografia, <a href="#">um link</a> e <strong>negrito</strong>.</p><button class="demo-btn">Botão</button><ul><li>Item 1</li><li>Item 2</li></ul><div class="demo-card">Card de exemplo (classe <code>.demo-card</code>)</div><input type="text" placeholder="Campo de texto"></div>';
-  return '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:24px;font-family:system-ui,-apple-system,sans-serif;background:#fff;color:#111}'+v+'</style></head><body>'+demo+'</body></html>';
+  return '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:24px;font-family:system-ui,-apple-system,sans-serif;background:#fff;color:#111}'+v+'</style></head><body>'+demo+'
+<script>
+/* Camada de segurança para cliques/touch: mantém os controles ativos mesmo em navegadores móveis. */
+(function(){
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('button,[data-size],[data-tab]'); if(!b) return;
+    const id=b.id;
+    try{
+      if(id==='runBtn'&&typeof render==='function'){render(); if(typeof toast==='function')toast('Preview executado');}
+      if(id==='zipBtn'&&typeof downloadProjectZip==='function')downloadProjectZip();
+      if(id==='copyBtn'&&window.cm){navigator.clipboard?.writeText(cm.getValue()).then(()=>toast?.('Código copiado')).catch(()=>{cm.execCommand('selectAll');document.execCommand('copy');toast?.('Código copiado')});}
+      if(id==='newBtn')document.getElementById('newModal')?.classList.add('show');
+      if(id==='cancelNew')document.getElementById('newModal')?.classList.remove('show');
+      if(id==='filesOpenFileBtn')document.getElementById('fileInput')?.click();
+      if(id==='filesOpenFolderBtn'||id==='openFolderBtn')document.getElementById('folderInput')?.click();
+      if(id==='githubBtn')document.getElementById('githubModal')?.classList.add('show');
+      if(id==='railFiles')document.getElementById('filesModal')?.classList.add('show');
+      if(id==='railSettings')document.getElementById('settingsModal')?.classList.add('show');
+      if(id==='filesClose')document.getElementById('filesModal')?.classList.remove('show');
+      if(id==='settingsClose')document.getElementById('settingsModal')?.classList.remove('show');
+    }catch(err){console.error('Brenda IDE click fallback',err)}
+  },true);
+})();
+</script>
+</body></html>';
 }
 function buildJsConsolePreview(v){
   const escaped=v.replace(/<\/script>/gi,'<\\/script>');
@@ -551,13 +653,61 @@ function buildJsConsolePreview(v){
     '["log","info","warn","error"].forEach(k=>{const orig=console[k];console[k]=function(...args){push(k,args);orig&&orig.apply(console,args)}});'+
     'window.onerror=function(msg,src,line){push("error",["Erro: "+msg+" (linha "+line+")"]);return true};'+
     'try{\n'+escaped+'\n}catch(e){push("error",["Erro: "+(e&&e.message||e)])}'+
-    '<\/script></body></html>';
+    '<\/script>
+<script>
+/* Camada de segurança para cliques/touch: mantém os controles ativos mesmo em navegadores móveis. */
+(function(){
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('button,[data-size],[data-tab]'); if(!b) return;
+    const id=b.id;
+    try{
+      if(id==='runBtn'&&typeof render==='function'){render(); if(typeof toast==='function')toast('Preview executado');}
+      if(id==='zipBtn'&&typeof downloadProjectZip==='function')downloadProjectZip();
+      if(id==='copyBtn'&&window.cm){navigator.clipboard?.writeText(cm.getValue()).then(()=>toast?.('Código copiado')).catch(()=>{cm.execCommand('selectAll');document.execCommand('copy');toast?.('Código copiado')});}
+      if(id==='newBtn')document.getElementById('newModal')?.classList.add('show');
+      if(id==='cancelNew')document.getElementById('newModal')?.classList.remove('show');
+      if(id==='filesOpenFileBtn')document.getElementById('fileInput')?.click();
+      if(id==='filesOpenFolderBtn'||id==='openFolderBtn')document.getElementById('folderInput')?.click();
+      if(id==='githubBtn')document.getElementById('githubModal')?.classList.add('show');
+      if(id==='railFiles')document.getElementById('filesModal')?.classList.add('show');
+      if(id==='railSettings')document.getElementById('settingsModal')?.classList.add('show');
+      if(id==='filesClose')document.getElementById('filesModal')?.classList.remove('show');
+      if(id==='settingsClose')document.getElementById('settingsModal')?.classList.remove('show');
+    }catch(err){console.error('Brenda IDE click fallback',err)}
+  },true);
+})();
+</script>
+</body></html>';
 }
 function buildJsonPreview(v){
   let body;
   try{const pretty=JSON.stringify(JSON.parse(v),null,2);body='<pre style="margin:0;padding:18px;white-space:pre-wrap;word-break:break-word">'+escapeHtml(pretty)+'</pre>'}
   catch(e){body='<div style="padding:18px;color:#dc2f45;font-weight:700">JSON inválido: '+escapeHtml(e.message)+'</div>'}
-  return '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#fff;color:#1a1a2e;font:13px/1.6 ui-monospace,Consolas,monospace}</style></head><body>'+body+'</body></html>';
+  return '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#fff;color:#1a1a2e;font:13px/1.6 ui-monospace,Consolas,monospace}</style></head><body>'+body+'
+<script>
+/* Camada de segurança para cliques/touch: mantém os controles ativos mesmo em navegadores móveis. */
+(function(){
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('button,[data-size],[data-tab]'); if(!b) return;
+    const id=b.id;
+    try{
+      if(id==='runBtn'&&typeof render==='function'){render(); if(typeof toast==='function')toast('Preview executado');}
+      if(id==='zipBtn'&&typeof downloadProjectZip==='function')downloadProjectZip();
+      if(id==='copyBtn'&&window.cm){navigator.clipboard?.writeText(cm.getValue()).then(()=>toast?.('Código copiado')).catch(()=>{cm.execCommand('selectAll');document.execCommand('copy');toast?.('Código copiado')});}
+      if(id==='newBtn')document.getElementById('newModal')?.classList.add('show');
+      if(id==='cancelNew')document.getElementById('newModal')?.classList.remove('show');
+      if(id==='filesOpenFileBtn')document.getElementById('fileInput')?.click();
+      if(id==='filesOpenFolderBtn'||id==='openFolderBtn')document.getElementById('folderInput')?.click();
+      if(id==='githubBtn')document.getElementById('githubModal')?.classList.add('show');
+      if(id==='railFiles')document.getElementById('filesModal')?.classList.add('show');
+      if(id==='railSettings')document.getElementById('settingsModal')?.classList.add('show');
+      if(id==='filesClose')document.getElementById('filesModal')?.classList.remove('show');
+      if(id==='settingsClose')document.getElementById('settingsModal')?.classList.remove('show');
+    }catch(err){console.error('Brenda IDE click fallback',err)}
+  },true);
+})();
+</script>
+</body></html>';
 }
 function renderMarkdown(md){
   let html=escapeHtml(md);
@@ -580,7 +730,31 @@ function renderMarkdown(md){
   return html;
 }
 function buildMarkdownPreview(v){
-  return '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:24px;font-family:system-ui,-apple-system,sans-serif;color:#1a1a2e;background:#fff;line-height:1.6;max-width:760px}h1,h2,h3{margin-top:1.2em}code{font-family:ui-monospace,Consolas,monospace}</style></head><body>'+renderMarkdown(v)+'</body></html>';
+  return '<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;padding:24px;font-family:system-ui,-apple-system,sans-serif;color:#1a1a2e;background:#fff;line-height:1.6;max-width:760px}h1,h2,h3{margin-top:1.2em}code{font-family:ui-monospace,Consolas,monospace}</style></head><body>'+renderMarkdown(v)+'
+<script>
+/* Camada de segurança para cliques/touch: mantém os controles ativos mesmo em navegadores móveis. */
+(function(){
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('button,[data-size],[data-tab]'); if(!b) return;
+    const id=b.id;
+    try{
+      if(id==='runBtn'&&typeof render==='function'){render(); if(typeof toast==='function')toast('Preview executado');}
+      if(id==='zipBtn'&&typeof downloadProjectZip==='function')downloadProjectZip();
+      if(id==='copyBtn'&&window.cm){navigator.clipboard?.writeText(cm.getValue()).then(()=>toast?.('Código copiado')).catch(()=>{cm.execCommand('selectAll');document.execCommand('copy');toast?.('Código copiado')});}
+      if(id==='newBtn')document.getElementById('newModal')?.classList.add('show');
+      if(id==='cancelNew')document.getElementById('newModal')?.classList.remove('show');
+      if(id==='filesOpenFileBtn')document.getElementById('fileInput')?.click();
+      if(id==='filesOpenFolderBtn'||id==='openFolderBtn')document.getElementById('folderInput')?.click();
+      if(id==='githubBtn')document.getElementById('githubModal')?.classList.add('show');
+      if(id==='railFiles')document.getElementById('filesModal')?.classList.add('show');
+      if(id==='railSettings')document.getElementById('settingsModal')?.classList.add('show');
+      if(id==='filesClose')document.getElementById('filesModal')?.classList.remove('show');
+      if(id==='settingsClose')document.getElementById('settingsModal')?.classList.remove('show');
+    }catch(err){console.error('Brenda IDE click fallback',err)}
+  },true);
+})();
+</script>
+</body></html>';
 }
 
 // ===== Tema claro/escuro =====
@@ -599,7 +773,31 @@ $('themeToggle').onclick=()=>applyTheme(document.documentElement.getAttribute('d
 
 const taEditor=$('editor'),preview=$('preview'),saveStatus=$('saveStatus'),fileNameLabel=$('fileNameLabel'),fileNameInput=$('fileNameInput'),charCount=$('charCount'),lineBadge=$('lineBadge'),fileInput=$('fileInput'),toastEl=$('toast'),previewShell=$('previewShell'),langPill=$('langPill');
 let currentFileName='projeto.html',updateTimer,currentLang=LANG_MAP.html;
-const starter=`<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>Meu projeto</title>\n  <style>\n    body {\n      font-family: Arial, sans-serif;\n      margin: 40px;\n    }\n  </style>\n</head>\n<body>\n  <h1>Olá 👋</h1>\n  <p>Edite o HTML e veja o resultado ao lado.</p>\n</body>\n</html>`;
+const starter=`<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>Meu projeto</title>\n  <style>\n    body {\n      font-family: Arial, sans-serif;\n      margin: 40px;\n    }\n  </style>\n</head>\n<body>\n  <h1>Olá 👋</h1>\n  <p>Edite o HTML e veja o resultado ao lado.</p>\n
+<script>
+/* Camada de segurança para cliques/touch: mantém os controles ativos mesmo em navegadores móveis. */
+(function(){
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('button,[data-size],[data-tab]'); if(!b) return;
+    const id=b.id;
+    try{
+      if(id==='runBtn'&&typeof render==='function'){render(); if(typeof toast==='function')toast('Preview executado');}
+      if(id==='zipBtn'&&typeof downloadProjectZip==='function')downloadProjectZip();
+      if(id==='copyBtn'&&window.cm){navigator.clipboard?.writeText(cm.getValue()).then(()=>toast?.('Código copiado')).catch(()=>{cm.execCommand('selectAll');document.execCommand('copy');toast?.('Código copiado')});}
+      if(id==='newBtn')document.getElementById('newModal')?.classList.add('show');
+      if(id==='cancelNew')document.getElementById('newModal')?.classList.remove('show');
+      if(id==='filesOpenFileBtn')document.getElementById('fileInput')?.click();
+      if(id==='filesOpenFolderBtn'||id==='openFolderBtn')document.getElementById('folderInput')?.click();
+      if(id==='githubBtn')document.getElementById('githubModal')?.classList.add('show');
+      if(id==='railFiles')document.getElementById('filesModal')?.classList.add('show');
+      if(id==='railSettings')document.getElementById('settingsModal')?.classList.add('show');
+      if(id==='filesClose')document.getElementById('filesModal')?.classList.remove('show');
+      if(id==='settingsClose')document.getElementById('settingsModal')?.classList.remove('show');
+    }catch(err){console.error('Brenda IDE click fallback',err)}
+  },true);
+})();
+</script>
+</body>\n</html>`;
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastEl._timer);toastEl._timer=setTimeout(()=>toastEl.classList.remove('show'),1900)}
 
 const cm=window.CodeMirror?CodeMirror.fromTextArea(taEditor,{
@@ -778,6 +976,30 @@ $('settingsReset').onclick=()=>{settings={...DEFAULT_SETTINGS};saveSettings();ap
 $('settingsClose').onclick=()=>settingsModal.classList.remove('show');
 
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+
+<script>
+/* Camada de segurança para cliques/touch: mantém os controles ativos mesmo em navegadores móveis. */
+(function(){
+  document.addEventListener('click',function(e){
+    const b=e.target.closest('button,[data-size],[data-tab]'); if(!b) return;
+    const id=b.id;
+    try{
+      if(id==='runBtn'&&typeof render==='function'){render(); if(typeof toast==='function')toast('Preview executado');}
+      if(id==='zipBtn'&&typeof downloadProjectZip==='function')downloadProjectZip();
+      if(id==='copyBtn'&&window.cm){navigator.clipboard?.writeText(cm.getValue()).then(()=>toast?.('Código copiado')).catch(()=>{cm.execCommand('selectAll');document.execCommand('copy');toast?.('Código copiado')});}
+      if(id==='newBtn')document.getElementById('newModal')?.classList.add('show');
+      if(id==='cancelNew')document.getElementById('newModal')?.classList.remove('show');
+      if(id==='filesOpenFileBtn')document.getElementById('fileInput')?.click();
+      if(id==='filesOpenFolderBtn'||id==='openFolderBtn')document.getElementById('folderInput')?.click();
+      if(id==='githubBtn')document.getElementById('githubModal')?.classList.add('show');
+      if(id==='railFiles')document.getElementById('filesModal')?.classList.add('show');
+      if(id==='railSettings')document.getElementById('settingsModal')?.classList.add('show');
+      if(id==='filesClose')document.getElementById('filesModal')?.classList.remove('show');
+      if(id==='settingsClose')document.getElementById('settingsModal')?.classList.remove('show');
+    }catch(err){console.error('Brenda IDE click fallback',err)}
+  },true);
+})();
 </script>
 </body>
 </html>
