@@ -28,7 +28,17 @@ Envie todos os arquivos deste ZIP para um repositório e habilite Settings → P
 - Rodapé e safe area do iPad em azul escuro, sem faixa branca.
 - Mantém GitHub, backup manual, preview e atualização.
 
-## v3.6 Ícones e acabamento
+## v3.7 Abas, ZIP e mais preview
+- **Abas de verdade**: cada arquivo aberto (single file, GitHub ou de dentro de uma pasta) vira uma aba na parte de cima do editor. Dá pra ter vários arquivos abertos ao mesmo tempo, trocar entre eles sem perder o que foi editado em cada um, e fechar abas individualmente (fecha a última e a IDE já abre um arquivo novo em branco pra nunca ficar sem nada editável).
+- **Baixar tudo em .zip**: botão "Baixar .zip" na barra de ferramentas e também dentro do explorador de arquivos. Se uma pasta foi importada, o zip sai com a mesma estrutura de pastas; se são só arquivos avulsos abertos, saem soltos na raiz do zip.
+- **Preview muito mais esperto por tipo de arquivo**:
+  - PHP: preview best-effort (tags `<?php ?>` são removidas e o HTML ao redor é mostrado, com um aviso de que PHP não roda no navegador).
+  - JavaScript: preview vira um console — mostra os `console.log/warn/error` e erros de execução, sem precisar abrir o DevTools.
+  - CSS: preview mostra uma página de exemplo (títulos, botão, lista, card, campo de texto) já estilizada com o seu CSS.
+  - JSON: preview mostra formatado/colorido, com aviso claro se o JSON estiver inválido.
+  - Markdown: preview renderiza o Markdown como HTML de verdade (títulos, negrito, itálico, listas, links, imagens, citação, código).
+  - SVG: preview renderiza a imagem vetorial diretamente.
+  - HTML continua com preview ao vivo completo, inclusive resolvendo os caminhos relativos quando uma pasta está aberta.
 - Ícone do app trocado: era azul (destoava do resto), agora é o gradiente roxo→magenta→laranja com "</>" branco, igual ao logo do cabeçalho e ao ícone do PWA (192px/512px).
 - Todos os ícones de botão (código, arquivos, buscar, configurações, sobre, tema, GitHub, atualizar, copiar, formatar, backup, commitar, tamanhos de preview, tela cheia) trocados de emoji/símbolos soltos para um conjunto de ícones SVG consistente (traço fino, monocromático), em vez da mistura de emojis coloridos com símbolos Unicode.
 - Página de Configurações de verdade (⚙ na barra lateral): tema, tamanho da fonte do editor, tamanho da tabulação, quebra de linha, números de linha, fechamento automático de colchetes e destaque da linha atual — tudo salvo entre sessões.
