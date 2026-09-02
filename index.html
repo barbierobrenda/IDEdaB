@@ -9,17 +9,23 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Brenda IDE">
   <link rel="manifest" href="manifest.json">
-  <title>Brenda IDE — HTML Live</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Brenda IDE — Multi-arquivo</title>
   <style>
+    :root{
+      --radius-sm:10px;--radius-lg:20px;--ease:.18s cubic-bezier(.4,0,.2,1);
+    }
     :root, [data-theme="dark"]{
       --bg:#100a1e;--bg2:#160f28;--panel:#160f28;--panel2:#1c1433;--line:#2c2148;
       --text:#f3edff;--muted:#a698c8;
       --accent:#a855f7;--accent2:#c9a3ff;--accent3:#8b2fe0;
       --danger:#ff8a93;--success:#63e6be;
-      --shadow:none;--radius:14px;
+      --shadow:0 24px 60px -16px rgba(0,0,0,.6);--radius:14px;
       --input-bg:#180f2c;--editor-bg:#120b22;--editor-text:#efe6ff;
       --rail-bg:#100a1e;--rail-active-bg:#2a1c4d;--rail-active-text:#d3adff;
-      --card-bg:#180f2c;--pill-bg:#180f2c;--preview-border:#dcd6e6;
+      --card-bg:#180f2c;--pill-bg:#180f2c;--preview-border:#2c2148;
       --btn-primary-text:#ffffff;--toast-bg:#f2e9ff;--toast-text:#1c1130;
       --security-bg:#221340;--security-border:#4a2f7a;--security-text:#d9c4ff;
     }
@@ -36,34 +42,55 @@
       --security-bg:#f3e9ff;--security-border:#d9c2f7;--security-text:#4a2f7a;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;height:100%;width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overscroll-behavior:none;transition:background .2s,color .2s}
+    html,body{margin:0;height:100%;width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overscroll-behavior:none;transition:background .2s,color .2s}
     body{overflow:hidden;min-height:100dvh;min-height:-webkit-fill-available;padding:0!important}
     button,input,textarea{font:inherit}
     button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+    :focus-visible{outline:2px solid var(--accent2);outline-offset:2px;border-radius:6px}
+    @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 
     .ide-shell{height:100dvh;min-height:100dvh;display:grid;grid-template-columns:52px minmax(0,1fr);background:var(--bg);padding-bottom:env(safe-area-inset-bottom)}
-    .app{height:calc(100dvh - env(safe-area-inset-bottom));min-height:0;background:var(--bg);display:grid;grid-template-rows:auto auto minmax(0,1fr) auto}
+    .app{height:calc(100dvh - env(safe-area-inset-bottom));min-height:0;background:var(--bg);display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto}
     .side-rail{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 7px 10px;border-right:1px solid var(--line);background:var(--rail-bg)}
-    .rail-btn{width:38px;height:38px;min-height:38px;padding:0;border:0;border-radius:10px;background:transparent;color:var(--muted);font-size:18px;font-weight:700;display:grid;place-items:center}
-    .rail-btn.active{background:var(--rail-active-bg);color:var(--rail-active-text)}.rail-btn:active{background:var(--panel2)}.rail-bottom{margin-top:auto}
+    .rail-btn{width:38px;height:38px;min-height:38px;padding:0;border:0;border-radius:var(--radius-sm);background:transparent;color:var(--muted);font-size:18px;font-weight:700;display:grid;place-items:center;transition:background var(--ease),color var(--ease)}
+    .rail-btn.active{background:var(--rail-active-bg);color:var(--rail-active-text)}.rail-btn:active{background:var(--panel2);transform:scale(.95)}.rail-bottom{margin-top:auto}
 
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:70px;padding:max(10px,env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line);background:var(--bg2)}
-    .brand{display:flex;align-items:center;gap:10px;min-width:0}
-    .logo{width:38px;height:38px;min-width:38px;min-height:38px;max-width:38px;max-height:38px;border-radius:10px;background:var(--panel2);display:grid;place-items:center;overflow:hidden;color:var(--btn-primary-text);font-weight:950}
+    header{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:70px;padding:max(10px,env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--bg2),var(--bg))}
+    header::before{content:'';position:absolute;top:-70%;left:-8%;width:280px;height:280px;background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.14;pointer-events:none}
+    .brand{position:relative;display:flex;align-items:center;gap:10px;min-width:0}
+    .logo{width:38px;height:38px;min-width:38px;min-height:38px;max-width:38px;max-height:38px;border-radius:var(--radius-sm);background:var(--panel2);display:grid;place-items:center;overflow:hidden;color:var(--btn-primary-text);font-weight:950;box-shadow:0 4px 14px rgba(0,0,0,.25)}
     .logo img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
     .title{font-weight:800;letter-spacing:-.02em;font-size:17px}
     .sub{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}
-    .top-actions,.toolbar-actions,.preview-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.top-actions{justify-content:flex-end}
+    .top-actions,.toolbar-actions,.preview-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.top-actions{position:relative;justify-content:flex-end}
 
-    .btn{border:1px solid transparent;background:transparent;color:var(--text);border-radius:10px;padding:8px 11px;font-weight:650;min-height:38px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
-    .btn:hover,.btn:active{border-color:var(--line);background:var(--panel2)}
+    .btn{border:1px solid transparent;background:transparent;color:var(--text);border-radius:var(--radius-sm);padding:8px 11px;font-weight:650;min-height:38px;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;transition:background var(--ease),border-color var(--ease),transform .1s ease}
+    .btn:hover{border-color:var(--line);background:var(--panel2)}
+    .btn:active{transform:scale(.97)}
     .btn.primary{background:var(--accent);color:var(--btn-primary-text);border-color:var(--accent)}
     .btn.primary:hover{background:var(--accent3);border-color:var(--accent3)}
     .btn.soft{background:transparent;color:var(--text);border-color:var(--line)}
     .btn.danger{color:var(--danger)}
     .btn.icon{min-width:38px;padding:8px}
+    .btn:disabled{opacity:.45;pointer-events:none}
     #updateBtn{background:var(--accent);color:var(--btn-primary-text);border-color:var(--accent)}
     #themeToggle{font-size:16px}
+
+    /* ===== Tab bar (multi-arquivo) ===== */
+    .tabbar{display:flex;align-items:flex-end;gap:4px;padding:8px 10px 0;background:var(--bg2);border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+    .tabbar::-webkit-scrollbar{display:none}
+    .tab{display:flex;align-items:center;gap:7px;padding:9px 8px 9px 11px;border-radius:10px 10px 0 0;background:var(--panel2);color:var(--muted);font-size:12.5px;font-weight:650;white-space:nowrap;cursor:pointer;border:1px solid var(--line);border-bottom:none;max-width:190px;transition:background var(--ease),color var(--ease)}
+    .tab:hover{color:var(--text)}
+    .tab.active{background:var(--panel);color:var(--text);box-shadow:inset 0 2px 0 var(--accent)}
+    .tab-dot{width:8px;height:8px;border-radius:3px;flex:none}
+    .lang-html{background:#f97316}.lang-css{background:#38bdf8}.lang-js{background:#facc15}
+    .lang-json{background:#4ade80}.lang-md{background:#a78bfa}.lang-txt{background:#94a3b8}
+    .tab-name{overflow:hidden;text-overflow:ellipsis;max-width:110px}
+    .tab-dirty{width:6px;height:6px;border-radius:50%;background:var(--accent2);flex:none}
+    .tab-close{border:0;background:transparent;color:var(--muted);width:18px;height:18px;border-radius:6px;display:grid;place-items:center;font-size:14px;flex:none;line-height:1;transition:background var(--ease),color var(--ease)}
+    .tab-close:hover{background:var(--line);color:var(--text)}
+    .tab-add{border:0;background:transparent;color:var(--muted);width:30px;height:30px;min-height:30px;border-radius:8px;display:grid;place-items:center;font-size:17px;font-weight:800;margin:0 2px 4px;flex:none;transition:background var(--ease),color var(--ease)}
+    .tab-add:hover{background:var(--panel2);color:var(--text)}
 
     .toolbar{display:flex;justify-content:space-between;gap:10px;min-height:56px;padding:8px 14px;border-bottom:1px solid var(--line);background:var(--bg2);overflow-x:auto;align-items:center}
     .toolbar::-webkit-scrollbar{display:none}.toolbar-actions{flex-wrap:nowrap}
@@ -75,12 +102,14 @@
     .pane{min-width:0;min-height:0;background:var(--panel);display:grid;grid-template-rows:auto 1fr}
     .pane:first-child{border-right:1px solid var(--line)}
     .pane-head{display:flex;align-items:center;justify-content:space-between;gap:8px;height:46px;padding:0 13px;border-bottom:1px solid var(--line);background:var(--panel)}
-    .pane-title{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2)}
-    .status{font-size:11px;color:var(--muted)}
+    .pane-title{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--accent2);white-space:nowrap}
+    .status{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
 
     .editor-wrap{position:relative;min-height:0}
     .line-badge{position:absolute;right:13px;bottom:10px;z-index:2;background:transparent;border:0;padding:6px 8px;font-size:10px;color:var(--muted);pointer-events:none}
-    textarea{width:100%;height:100%;resize:none;border:0;outline:0;background:var(--editor-bg);color:var(--editor-text);padding:18px 20px 76px;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.6;tab-size:2;caret-color:var(--accent2);-webkit-overflow-scrolling:touch}
+    textarea{width:100%;height:100%;resize:none;border:0;outline:0;background:var(--editor-bg);color:var(--editor-text);padding:18px 20px 76px;font-family:'JetBrains Mono',"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.6;tab-size:2;caret-color:var(--accent2);-webkit-overflow-scrolling:touch}
+    textarea::-webkit-scrollbar{width:10px;height:10px}
+    textarea::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
 
     .preview-stage{height:100%;display:grid;place-items:center;background:var(--panel);padding:10px;overflow:auto}
     .preview-shell{width:100%;height:100%;background:#fff;border-radius:10px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--preview-border);transition:.2s}
@@ -88,13 +117,17 @@
     .preview-shell.tablet{width:820px;max-width:100%;height:1180px;max-height:100%}
     .preview-shell.desktop{width:100%;height:100%}
     iframe{width:100%;height:100%;border:0;background:#fff}
+    .preview-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);text-align:center;padding:30px;background:var(--panel)}
+    .preview-empty-icon{font-size:34px;opacity:.55}
+    .preview-empty p{max-width:320px;line-height:1.55;margin:0;font-size:13px}
+    .preview-stage[hidden],.preview-empty[hidden]{display:none!important}
 
     footer{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);background:var(--bg2);min-height:38px;padding:7px 14px max(7px,env(safe-area-inset-bottom));font-size:11px;color:var(--muted)}
     .mobile-tabs{display:none}
     .toast{position:fixed;left:50%;bottom:72px;transform:translateX(-50%) translateY(15px);background:var(--toast-bg);color:var(--toast-text);padding:10px 14px;border-radius:12px;font-weight:750;opacity:0;pointer-events:none;transition:.18s;box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:30}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     .modal{position:fixed;inset:0;background:rgba(10,4,20,.6);display:none;place-items:center;padding:18px;z-index:40}.modal.show{display:grid}
-    .card{width:min(530px,100%);background:var(--card-bg);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+    .card{width:min(530px,100%);background:var(--card-bg);border:1px solid var(--line);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow)}
     .card h3{margin:0 0 8px}.card p{color:var(--muted);line-height:1.45}
     .row{display:flex;gap:8px}.row .btn{flex:1}
     input[type=file]{display:none}
@@ -111,8 +144,9 @@
     .github-field input,.github-field select{width:100%;background:var(--input-bg);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:10px 11px;outline:none;min-height:42px}
     .github-help{font-size:11px;color:var(--muted);line-height:1.45;margin-top:5px}.github-help strong{color:var(--text)}
     .file-browser{margin-top:12px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg2);max-height:42vh;overflow-y:auto}
-    .file-row{display:flex;align-items:center;gap:9px;padding:11px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+    .file-row{display:flex;align-items:center;gap:9px;padding:11px 12px;border-bottom:1px solid var(--line);cursor:pointer;transition:background var(--ease)}
     .file-row:last-child{border-bottom:0}.file-row:hover{background:var(--panel2)}
+    .file-row.is-open{color:var(--accent2)}
     .file-ico{width:25px;text-align:center}.file-main{min-width:0;flex:1}
     .file-main b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .file-main small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
@@ -126,11 +160,14 @@
 
     @media(max-width:850px){
       .ide-shell{grid-template-columns:44px minmax(0,1fr)}.side-rail{padding-left:4px;padding-right:4px}.rail-btn{width:34px;height:36px;min-height:36px}
-      header{align-items:flex-start;padding-left:12px;padding-right:12px}.desktop-only{display:none!important}
+      header{align-items:flex-start;padding-left:12px;padding-right:12px}
       .toolbar{padding-left:10px;padding-right:10px}.search-wrap{min-width:200px}
       .workspace{grid-template-columns:1fr}.pane{display:none}.pane.active{display:grid}
       .mobile-tabs{display:flex;gap:6px}.mobile-tabs .btn{padding:7px 10px;min-height:34px}
       .sub{max-width:48vw}.preview-stage{padding:6px}
+      .tab{max-width:140px}.tab-name{max-width:70px}
+      .preview-tools{display:none}
+      .pane-title{max-width:96px;overflow:hidden;text-overflow:ellipsis}
     }
     @media(min-width:851px){.pane{display:grid!important}}
     @media(max-width:620px){.side-rail{display:none}.ide-shell{grid-template-columns:1fr}}
@@ -142,7 +179,7 @@
 <div class="ide-shell">
   <aside class="side-rail" aria-label="Atalhos">
     <button class="rail-btn active" id="railCode" title="Código">&lt;/&gt;</button>
-    <button class="rail-btn" id="railFiles" title="Abrir arquivo">▢</button>
+    <button class="rail-btn" id="railFiles" title="Abrir arquivo(s)">▢</button>
     <button class="rail-btn" id="railSearch" title="Buscar">⌕</button>
     <button class="rail-btn" id="railSettings" title="Configurações">⚙</button>
     <button class="rail-btn rail-bottom" id="railInfo" title="Sobre">ⓘ</button>
@@ -151,17 +188,21 @@
   <header>
     <div class="brand"><div class="logo"><img src="brenda-ide-logo.jpg" alt="Logo Brenda IDE"></div><div><div class="title">Brenda IDE</div><div class="sub" id="fileNameLabel">projeto.html • alterações só nesta sessão</div></div></div>
     <div class="top-actions">
-      <label class="btn" for="fileInput">Abrir</label><input id="fileInput" type="file" accept=".html,.htm,text/html">
-      <button class="btn desktop-only" id="newBtn">Novo</button>
+      <label class="btn" for="fileInput">Abrir</label><input id="fileInput" type="file" accept=".html,.htm,.css,.js,.json,.md,.txt,text/*" multiple>
+      <button class="btn" id="newBtn">+ Aba</button>
       <button class="btn icon soft" id="themeToggle" title="Alternar tema claro/escuro">🌙</button>
       <button class="btn soft" id="githubBtn">◉ GitHub</button>
       <button class="btn soft" id="updateBtn">↻ Atualizar</button>
     </div>
   </header>
 
+  <div class="tabbar" id="tabbar">
+    <button class="tab-add" id="tabAddBtn" title="Nova aba">+</button>
+  </div>
+
   <div class="toolbar">
     <div class="toolbar-actions">
-      <input class="filename-input" id="fileNameInput" value="projeto.html" aria-label="Nome do arquivo">
+      <input class="filename-input" id="fileNameInput" value="projeto.html" aria-label="Nome do arquivo da aba atual">
       <button class="btn" id="copyBtn">⧉ <span>Copiar</span></button>
       <button class="btn" id="formatBtn">≡ <span>Formatar</span></button>
       <button class="btn" id="backupBtn">⇩ <span>Backup</span></button>
@@ -172,23 +213,22 @@
 
   <main class="workspace">
     <section class="pane active" id="editorPane">
-      <div class="pane-head"><div class="pane-title">HTML</div><div class="mobile-tabs"><button class="btn primary" data-tab="editor">Código</button><button class="btn" data-tab="preview">Preview</button></div><div class="status" id="saveStatus">não salvo</div></div>
+      <div class="pane-head"><div class="pane-title" id="editorPaneTitle">HTML</div><div class="mobile-tabs"><button class="btn primary" data-tab="editor">Código</button><button class="btn" data-tab="preview">Preview</button></div><div class="status" id="saveStatus">não salvo</div></div>
       <div class="editor-wrap"><textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea><div class="line-badge" id="lineBadge">1 linha</div></div>
     </section>
 
     <section class="pane" id="previewPane">
       <div class="pane-head"><div class="pane-title">Preview em tempo real</div><div class="preview-tools"><button class="btn icon" data-size="phone" title="Celular">▯</button><button class="btn icon" data-size="tablet" title="Tablet">▭</button><button class="btn icon" data-size="desktop" title="Desktop">▰</button><button class="btn" id="fullPreviewBtn">Tela cheia</button></div><div class="mobile-tabs"><button class="btn" data-tab="editor">Código</button><button class="btn primary" data-tab="preview">Preview</button></div></div>
-      <div class="preview-stage"><div class="preview-shell desktop" id="previewShell"><iframe id="preview" sandbox="allow-scripts allow-forms allow-modals allow-same-origin"></iframe></div></div>
+      <div class="preview-stage" id="previewStage"><div class="preview-shell desktop" id="previewShell"><iframe id="preview" sandbox="allow-scripts allow-forms allow-modals allow-same-origin"></iframe></div></div>
+      <div class="preview-empty" id="previewEmpty" hidden><div class="preview-empty-icon">🗎</div><p id="previewEmptyMsg">Pré-visualização ao vivo é exclusiva para arquivos HTML.</p></div>
     </section>
   </main>
 
-  <footer><span>⌘/Ctrl + S salva • ⌘/Ctrl + F busca</span><span id="charCount">0 caracteres</span></footer>
+  <footer><span>⌘/Ctrl + S faz backup • ⌘/Ctrl + F busca</span><span id="charCount">0 caracteres</span></footer>
 </div>
-  </div>
 </div>
 
 <div class="toast" id="toast"></div>
-<div class="modal" id="newModal"><div class="card"><h3>Novo arquivo</h3><p>O editor será substituído por um HTML novo. Nada será salvo automaticamente.</p><div class="row"><button class="btn" id="cancelNew">Cancelar</button><button class="btn danger" id="confirmNew">Criar novo</button></div></div></div>
 <div class="modal" id="githubModal"><div class="card github-card">
   <h3>GitHub</h3>
   <div id="githubConnectionForm">
@@ -206,6 +246,7 @@
     </div>
     <div class="github-breadcrumb" id="ghBreadcrumb"></div>
     <div class="file-browser" id="ghFiles"><div class="file-row"><div class="file-main"><b>Escolha um repositório</b><small>Os arquivos aparecerão aqui.</small></div></div></div>
+    <p class="github-help">Cada arquivo aberto vira uma nova aba — dá para abrir vários arquivos do mesmo repositório e commitar cada um de forma independente.</p>
     <div class="github-actions"><button class="btn" id="ghRefresh">↻ Atualizar arquivos</button><button class="btn danger" id="ghDisconnect">Desconectar</button><button class="btn" id="ghClose">Fechar</button></div>
   </div>
   <div class="row" id="ghCancelRow" style="margin-top:12px"><button class="btn" id="ghCancel">Cancelar</button></div>
@@ -213,7 +254,7 @@
 
 <div class="modal" id="commitModal"><div class="card github-card">
   <h3>Confirmar commit</h3>
-  <p>O commit só será enviado quando você confirmar. Se quiser uma cópia local antes, use o botão Backup.</p>
+  <p>O commit só será enviado quando você confirmar, e afeta apenas a aba atual. Se quiser uma cópia local antes, use o botão Backup.</p>
   <div class="commit-summary">Repositório: <code id="commitRepo">—</code><br>Branch: <code id="commitBranch">—</code><br>Arquivo: <code id="commitPath">—</code></div>
   <div class="github-field full"><label>Mensagem do commit</label><input id="commitMessage" placeholder="Ex.: Ajusta tela inicial do Dental Tech"></div>
   <div class="security-note">Somente uma conta/token com permissão de escrita nesse repositório consegue concluir este commit.</div>
@@ -232,61 +273,203 @@ function applyTheme(t){
 applyTheme(localStorage.getItem('brendaide_theme')||'dark');
 $('themeToggle').onclick=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
 
-const editor=$('editor'),preview=$('preview'),saveStatus=$('saveStatus'),fileNameLabel=$('fileNameLabel'),fileNameInput=$('fileNameInput'),charCount=$('charCount'),lineBadge=$('lineBadge'),fileInput=$('fileInput'),toastEl=$('toast'),previewShell=$('previewShell');
-let currentFileName='projeto.html',updateTimer;
+const editor=$('editor'),preview=$('preview'),saveStatus=$('saveStatus'),fileNameLabel=$('fileNameLabel'),fileNameInput=$('fileNameInput'),charCount=$('charCount'),lineBadge=$('lineBadge'),fileInput=$('fileInput'),toastEl=$('toast'),previewShell=$('previewShell'),tabbar=$('tabbar');
+let updateTimer;
 const starter=`<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>Meu projeto</title>\n  <style>\n    body {\n      font-family: Arial, sans-serif;\n      margin: 40px;\n    }\n  </style>\n</head>\n<body>\n  <h1>Olá 👋</h1>\n  <p>Edite o HTML e veja o resultado ao lado.</p>\n</body>\n</html>`;
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastEl._timer);toastEl._timer=setTimeout(()=>toastEl.classList.remove('show'),1900)}
-function setFileName(name){currentFileName=(name||'projeto.html').trim();if(!/\.html?$/i.test(currentFileName))currentFileName+='.html';fileNameLabel.textContent=currentFileName+' • alterações só nesta sessão';fileNameInput.value=currentFileName}
+
+// ===== GitHub — estado (declarado cedo: usado por funções chamadas na inicialização) =====
+let ghToken=sessionStorage.getItem('brendaide_gh_token')||'';
+let ghUser=null,ghCurrentRepo='',ghCurrentBranch='main',ghCurrentDir='';
+
+// ===== Abas / múltiplos arquivos =====
+let tabs=[],activeId=null,tabSeq=0;
+const LANG_LABEL={html:'HTML',css:'CSS',js:'JavaScript',json:'JSON',md:'Markdown',txt:'texto'};
+const LANG_SHORT={html:'HTML',css:'CSS',js:'JS',json:'JSON',md:'MD',txt:'TXT'};
+function detectLang(name){
+  const ext=(name.split('.').pop()||'').toLowerCase();
+  if(ext==='html'||ext==='htm')return'html';
+  if(ext==='css')return'css';
+  if(ext==='js'||ext==='mjs')return'js';
+  if(ext==='json')return'json';
+  if(ext==='md')return'md';
+  return'txt';
+}
+function getActiveTab(){return tabs.find(t=>t.id===activeId)}
+function newTab({name,content='',gh=null,activate=true}){
+  const id='t'+(++tabSeq);
+  const tab={id,name,content,lang:detectLang(name),dirty:false,gh};
+  tabs.push(tab);
+  renderTabs();
+  if(activate)activateTab(id);
+  return tab;
+}
+function activateTab(id){
+  const prev=getActiveTab();
+  if(prev&&prev.id!==id)prev.content=editor.value;
+  activeId=id;
+  const tab=getActiveTab();
+  if(!tab)return;
+  editor.value=tab.content;
+  fileNameInput.value=tab.name;
+  fileNameLabel.textContent=tab.name+(tab.gh?' • '+tab.gh.repo:' • alterações só nesta sessão');
+  renderTabs();
+  updatePaneTitle();
+  updateCommitState();
+  render();
+  refreshSaveStatus();
+}
+function closeTab(id){
+  const idx=tabs.findIndex(t=>t.id===id);
+  if(idx<0)return;
+  const tab=tabs[idx];
+  if(tab.dirty&&!confirm('Fechar "'+tab.name+'" sem commitar ou fazer backup das alterações?'))return;
+  tabs.splice(idx,1);
+  if(!tabs.length){newTab({name:'projeto.html',content:starter});return}
+  if(activeId===id)activateTab(tabs[Math.max(0,idx-1)].id);
+  else renderTabs();
+}
+function renderTabs(){
+  tabbar.querySelectorAll('.tab').forEach(n=>n.remove());
+  const addBtn=$('tabAddBtn');
+  tabs.forEach(t=>{
+    const el=document.createElement('div');
+    el.className='tab'+(t.id===activeId?' active':'');
+    el.title=t.name+(t.gh?' — '+t.gh.repo+'/'+t.gh.path:'');
+    const dot=document.createElement('span');dot.className='tab-dot lang-'+t.lang;el.appendChild(dot);
+    const nameEl=document.createElement('span');nameEl.className='tab-name';nameEl.textContent=t.name;el.appendChild(nameEl);
+    if(t.dirty){const d=document.createElement('span');d.className='tab-dirty';d.title='Alterações não commitadas';el.appendChild(d)}
+    const close=document.createElement('button');close.type='button';close.className='tab-close';close.textContent='×';close.title='Fechar aba';
+    close.onclick=e=>{e.stopPropagation();closeTab(t.id)};
+    el.appendChild(close);
+    el.onclick=()=>activateTab(t.id);
+    tabbar.insertBefore(el,addBtn);
+  });
+}
+function updatePaneTitle(){const tab=getActiveTab();if(!tab)return;$('editorPaneTitle').textContent=LANG_SHORT[tab.lang]||'TXT'}
+function updateCommitState(){const tab=getActiveTab();$('commitBtn').disabled=!(ghToken&&tab&&tab.gh)}
+function refreshSaveStatus(){
+  const tab=getActiveTab();
+  if(!tab){saveStatus.textContent='';return}
+  if(tab.gh)saveStatus.textContent=tab.dirty?'alterações não commitadas':'sincronizado com GitHub';
+  else saveStatus.textContent=tab.dirty?'editado nesta sessão':'somente nesta aba';
+}
+function persistTabs(){try{sessionStorage.setItem('brendaide_tabs',JSON.stringify({tabs,activeId}))}catch(e){}}
+function restoreTabs(){
+  try{
+    const raw=sessionStorage.getItem('brendaide_tabs');
+    sessionStorage.removeItem('brendaide_tabs');
+    if(!raw)return false;
+    const data=JSON.parse(raw);
+    if(!data.tabs||!data.tabs.length)return false;
+    tabs=data.tabs;
+    tabSeq=tabs.reduce((m,t)=>Math.max(m,parseInt((t.id||'t0').slice(1))||0),0);
+    activeId=data.activeId&&tabs.some(t=>t.id===data.activeId)?data.activeId:tabs[0].id;
+    return true;
+  }catch(e){return false}
+}
+
+function renameActiveTab(name){
+  const tab=getActiveTab();if(!tab)return;
+  let n=(name||'sem-titulo.txt').trim();if(!n)n='sem-titulo.txt';
+  tab.name=n;tab.lang=detectLang(n);
+  fileNameInput.value=n;
+  fileNameLabel.textContent=n+(tab.gh?' • '+tab.gh.repo:' • alterações só nesta sessão');
+  renderTabs();updatePaneTitle();render();
+}
 function stats(){charCount.textContent=editor.value.length.toLocaleString('pt-BR')+' caracteres';const lines=editor.value.split('\n').length;lineBadge.textContent=lines+(lines===1?' linha':' linhas')}
-function render(){preview.srcdoc=editor.value;stats()}
-function scheduleUpdate(){saveStatus.textContent='somente na IDE';clearTimeout(updateTimer);updateTimer=setTimeout(()=>{render()},180)}
+function render(){
+  const tab=getActiveTab();
+  if(tab)tab.content=editor.value;
+  const isHtml=!!tab&&tab.lang==='html';
+  $('previewStage').hidden=!isHtml;
+  $('previewEmpty').hidden=isHtml;
+  if(isHtml)preview.srcdoc=editor.value;
+  else if(tab)$('previewEmptyMsg').textContent='Pré-visualização ao vivo é exclusiva para HTML. "'+tab.name+'" é um arquivo '+(LANG_LABEL[tab.lang]||'texto')+'.';
+  stats();
+}
+function scheduleUpdate(){
+  const tab=getActiveTab();
+  if(tab){tab.content=editor.value;if(!tab.dirty){tab.dirty=true;renderTabs()}}
+  refreshSaveStatus();
+  clearTimeout(updateTimer);updateTimer=setTimeout(render,180);
+}
 function download(content,name,type='text/html;charset=utf-8'){const blob=new Blob([content],{type});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200)}
-function backupIde(){setFileName(fileNameInput.value);const backup={app:'Brenda IDE',version:'3.1',date:new Date().toISOString(),filename:currentFileName,code:editor.value};const stamp=new Date().toISOString().replace(/[:.]/g,'-');download(JSON.stringify(backup,null,2),'BrendaIDE_Backup_'+stamp+'.json','application/json');saveStatus.textContent='backup baixado';toast('Backup baixado')}
+function backupIde(){
+  const tab=getActiveTab();if(tab)tab.content=editor.value;
+  const backup={app:'Brenda IDE',version:'4.0',date:new Date().toISOString(),files:tabs.map(t=>({name:t.name,lang:t.lang,content:t.content,github:t.gh?{repo:t.gh.repo,branch:t.gh.branch,path:t.gh.path}:null}))};
+  const stamp=new Date().toISOString().replace(/[:.]/g,'-');
+  download(JSON.stringify(backup,null,2),'BrendaIDE_Backup_'+stamp+'.json','application/json');
+  tabs.forEach(t=>{if(!t.gh)t.dirty=false});
+  renderTabs();refreshSaveStatus();
+  toast('Backup de '+tabs.length+(tabs.length===1?' arquivo baixado':' arquivos baixado'));
+}
 function simpleFormatHTML(src){let out='',indent=0;const tokens=src.replace(/>\s*</g,'>\n<').split('\n');const voidTag=/^<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)\b/i;tokens.forEach(raw=>{const s=raw.trim();if(!s)return;if(/^<\//.test(s))indent=Math.max(0,indent-1);out+='  '.repeat(indent)+s+'\n';if(/^<[^!/][^>]*>/.test(s)&&!/^<\//.test(s)&&!voidTag.test(s)&&!/>.*<\//.test(s)&&!/<\/$/.test(s)&&!s.endsWith('/>'))indent++});return out.trimEnd()}
-const tempUpdate=sessionStorage.getItem('brendaide_update_temp');if(tempUpdate){try{const t=JSON.parse(tempUpdate);editor.value=t.code||starter;currentFileName=t.filename||'projeto.html'}catch{editor.value=starter}sessionStorage.removeItem('brendaide_update_temp')}else{editor.value=starter}setFileName(currentFileName);render();
-editor.addEventListener('input',scheduleUpdate);fileNameInput.addEventListener('change',()=>setFileName(fileNameInput.value));
+
+// ===== Inicialização das abas =====
+if(restoreTabs()){renderTabs();activateTab(activeId)}else{newTab({name:'projeto.html',content:starter})}
+
+editor.addEventListener('input',scheduleUpdate);
+fileNameInput.addEventListener('change',()=>renameActiveTab(fileNameInput.value));
 editor.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();editor.setRangeText('  ',editor.selectionStart,editor.selectionEnd,'end');scheduleUpdate()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();backupIde()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='f'){e.preventDefault();$('searchInput').focus()}});
-fileInput.addEventListener('change',async()=>{const file=fileInput.files?.[0];if(!file)return;editor.value=await file.text();setFileName(file.name);saveStatus.textContent='somente na IDE';render();toast('Arquivo aberto');fileInput.value=''});
+fileInput.addEventListener('change',async()=>{
+  const files=[...(fileInput.files||[])];
+  if(!files.length)return;
+  for(const file of files){const text=await file.text();newTab({name:file.name,content:text,gh:null,activate:false})}
+  activateTab(tabs[tabs.length-1].id);
+  toast(files.length>1?files.length+' arquivos abertos':'Arquivo aberto');
+  fileInput.value='';
+});
 $('backupBtn').onclick=backupIde;
 $('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(editor.value);toast('Código copiado')}catch{editor.select();document.execCommand('copy');toast('Código copiado')}};
-$('formatBtn').onclick=()=>{editor.value=simpleFormatHTML(editor.value);saveStatus.textContent='somente na IDE';render();toast('HTML formatado')};
+$('formatBtn').onclick=()=>{const tab=getActiveTab();if(tab&&tab.lang!=='html'){toast('Formatação automática disponível apenas para HTML');return}editor.value=simpleFormatHTML(editor.value);if(tab)tab.content=editor.value;render();toast('HTML formatado')};
 $('findBtn').onclick=()=>{const q=$('searchInput').value;if(!q)return;const start=editor.selectionEnd||0;let i=editor.value.toLowerCase().indexOf(q.toLowerCase(),start);if(i<0)i=editor.value.toLowerCase().indexOf(q.toLowerCase());if(i>=0){editor.focus();editor.setSelectionRange(i,i+q.length);toast('Encontrado')}else toast('Não encontrado')};
 $('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('findBtn').click()});
-$('fullPreviewBtn').onclick=()=>{const blob=new Blob([editor.value],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),win=window.open(url,'_blank');if(!win)toast('Permita pop-ups para o preview');setTimeout(()=>URL.revokeObjectURL(url),60000)};
+$('fullPreviewBtn').onclick=()=>{const tab=getActiveTab();const isHtml=!!tab&&tab.lang==='html';const type=isHtml?'text/html;charset=utf-8':'text/plain;charset=utf-8';const blob=new Blob([editor.value],{type}),url=URL.createObjectURL(blob),win=window.open(url,'_blank');if(!win)toast('Permita pop-ups para o preview');setTimeout(()=>URL.revokeObjectURL(url),60000)};
 document.querySelectorAll('[data-size]').forEach(b=>b.onclick=()=>{previewShell.className='preview-shell '+b.dataset.size;toast('Preview: '+({phone:'celular',tablet:'tablet',desktop:'desktop'}[b.dataset.size]))});
-const newModal=$('newModal');$('newBtn').onclick=()=>newModal.classList.add('show');$('cancelNew').onclick=()=>newModal.classList.remove('show');$('confirmNew').onclick=()=>{editor.value=starter;setFileName('projeto.html');saveStatus.textContent='somente na IDE';render();newModal.classList.remove('show');toast('Novo arquivo criado')};
+function createBlankTab(){
+  let base='novo',ext='html',n=1,name;
+  do{name=base+(n===1?'':'-'+n)+'.'+ext;n++}while(tabs.some(t=>t.name===name));
+  newTab({name,content:starter});
+  toast('Nova aba criada');
+  fileNameInput.focus();fileNameInput.select();
+}
+$('newBtn').onclick=createBlankTab;
+$('tabAddBtn').onclick=createBlankTab;
 document.querySelectorAll('[data-tab]').forEach(btn=>btn.onclick=()=>{const tab=btn.dataset.tab;$('editorPane').classList.toggle('active',tab==='editor');$('previewPane').classList.toggle('active',tab==='preview')});
-$('updateBtn').onclick=async()=>{const btn=$('updateBtn');btn.disabled=true;btn.textContent='Atualizando…';try{sessionStorage.setItem('brendaide_update_temp',JSON.stringify({filename:currentFileName,code:editor.value}));if('serviceWorker'in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update();}const url=new URL(location.href);url.searchParams.set('_v',Date.now());location.replace(url.toString())}catch(e){sessionStorage.removeItem('brendaide_update_temp');btn.disabled=false;btn.textContent='↻ Atualizar';toast('Não foi possível atualizar')}};
+$('updateBtn').onclick=async()=>{const btn=$('updateBtn');btn.disabled=true;btn.textContent='Atualizando…';try{const tab=getActiveTab();if(tab)tab.content=editor.value;persistTabs();if('serviceWorker'in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update();}const url=new URL(location.href);url.searchParams.set('_v',Date.now());location.replace(url.toString())}catch(e){sessionStorage.removeItem('brendaide_tabs');btn.disabled=false;btn.textContent='↻ Atualizar';toast('Não foi possível atualizar')}};
 
 // ===== GitHub v3 — token somente na sessão =====
-let ghToken=sessionStorage.getItem('brendaide_gh_token')||'';
-let ghUser=null,ghCurrentRepo='',ghCurrentBranch='main',ghCurrentPath='',ghCurrentSha='',ghCurrentDir='';
 const ghModal=$('githubModal'),commitModal=$('commitModal');
 function ghHeaders(){return {'Accept':'application/vnd.github+json','Authorization':'Bearer '+ghToken,'X-GitHub-Api-Version':'2026-03-10'}}
 async function ghApi(path,options={}){const res=await fetch('https://api.github.com'+path,{...options,headers:{...ghHeaders(),...(options.headers||{})}});if(!res.ok){let msg='GitHub: erro '+res.status;try{const j=await res.json();if(j.message)msg+=' — '+j.message}catch{}throw new Error(msg)}if(res.status===204)return null;return res.json()}
 function b64ToUtf8(b64){const bytes=Uint8Array.from(atob((b64||'').replace(/\n/g,'')),c=>c.charCodeAt(0));return new TextDecoder().decode(bytes)}
 function utf8ToB64(str){const bytes=new TextEncoder().encode(str);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(bin)}
-function ghSetConnected(on){$('githubConnectionForm').style.display=on?'none':'block';$('githubConnected').style.display=on?'block':'none';$('ghCancelRow').style.display=on?'none':'flex';$('commitBtn').disabled=!on||!ghCurrentPath}
+function ghSetConnected(on){$('githubConnectionForm').style.display=on?'none':'block';$('githubConnected').style.display=on?'block':'none';$('ghCancelRow').style.display=on?'none':'flex';updateCommitState()}
 async function ghConnect(){ghToken=$('ghToken').value.trim();if(!ghToken){toast('Informe o token');return}$('ghConnect').disabled=true;$('ghConnect').textContent='Conectando…';try{ghUser=await ghApi('/user');sessionStorage.setItem('brendaide_gh_token',ghToken);$('ghUserLabel').textContent='@'+ghUser.login;await ghLoadRepos();ghSetConnected(true);toast('GitHub conectado')}catch(e){ghToken='';sessionStorage.removeItem('brendaide_gh_token');toast(e.message)}finally{$('ghConnect').disabled=false;$('ghConnect').textContent='Conectar'}}
 async function ghLoadRepos(){const repos=await ghApi('/user/repos?per_page=100&sort=updated&affiliation=owner,collaborator,organization_member');const sel=$('ghRepo');sel.innerHTML='';repos.filter(r=>r.permissions&&r.permissions.push).forEach(r=>{const o=document.createElement('option');o.value=r.full_name;o.textContent=r.full_name;o.dataset.branch=r.default_branch||'main';sel.appendChild(o)});if(sel.options.length){ghCurrentRepo=sel.value;ghCurrentBranch=sel.selectedOptions[0].dataset.branch;$('ghBranch').value=ghCurrentBranch;await ghBrowse('')}}
-async function ghBrowse(dir=''){if(!ghCurrentRepo)return;ghCurrentDir=dir;const branch=$('ghBranch').value.trim()||'main';ghCurrentBranch=branch;const data=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(dir)+'?ref='+encodeURIComponent(branch));const arr=Array.isArray(data)?data:[data];arr.sort((a,b)=>(a.type===b.type? a.name.localeCompare(b.name):a.type==='dir'?-1:1));const box=$('ghFiles');box.innerHTML='';arr.forEach(item=>{const row=document.createElement('div');row.className='file-row';row.innerHTML='<div class="file-ico">'+(item.type==='dir'?'📁':'📄')+'</div><div class="file-main"><b></b><small></small></div>';row.querySelector('b').textContent=item.name;row.querySelector('small').textContent=item.type==='dir'?'Pasta':(item.size||0).toLocaleString('pt-BR')+' bytes';row.onclick=()=>item.type==='dir'?ghBrowse(item.path):ghOpenFile(item);box.appendChild(row)});ghRenderBreadcrumb();}
+async function ghBrowse(dir=''){if(!ghCurrentRepo)return;ghCurrentDir=dir;const branch=$('ghBranch').value.trim()||'main';ghCurrentBranch=branch;const data=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(dir)+'?ref='+encodeURIComponent(branch));const arr=Array.isArray(data)?data:[data];arr.sort((a,b)=>(a.type===b.type? a.name.localeCompare(b.name):a.type==='dir'?-1:1));const box=$('ghFiles');box.innerHTML='';arr.forEach(item=>{const alreadyOpen=item.type!=='dir'&&tabs.some(t=>t.gh&&t.gh.repo===ghCurrentRepo&&t.gh.branch===ghCurrentBranch&&t.gh.path===item.path);const row=document.createElement('div');row.className='file-row'+(alreadyOpen?' is-open':'');row.innerHTML='<div class="file-ico">'+(item.type==='dir'?'📁':'📄')+'</div><div class="file-main"><b></b><small></small></div>';row.querySelector('b').textContent=item.name;row.querySelector('small').textContent=item.type==='dir'?'Pasta':((item.size||0).toLocaleString('pt-BR')+' bytes'+(alreadyOpen?' • já aberto em uma aba':''));row.onclick=()=>item.type==='dir'?ghBrowse(item.path):ghOpenFile(item);box.appendChild(row)});ghRenderBreadcrumb();}
 function ghRenderBreadcrumb(){const b=$('ghBreadcrumb');b.innerHTML='';const root=document.createElement('button');root.className='crumb';root.textContent='⌂ raiz';root.onclick=()=>ghBrowse('');b.appendChild(root);let acc='';ghCurrentDir.split('/').filter(Boolean).forEach(p=>{acc+=(acc?'/':'')+p;const btn=document.createElement('button');btn.className='crumb';btn.textContent='› '+p;const target=acc;btn.onclick=()=>ghBrowse(target);b.appendChild(btn)})}
-async function ghOpenFile(item){if(!/\.(html?|css|js|json|md|txt)$/i.test(item.name)){toast('Por segurança, a v3 abre arquivos de texto/código');return}try{const data=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(item.path)+'?ref='+encodeURIComponent(ghCurrentBranch));editor.value=b64ToUtf8(data.content);ghCurrentPath=item.path;ghCurrentSha=data.sha;setFileName(item.name);saveStatus.textContent='somente na IDE';render();$('commitBtn').disabled=false;ghModal.classList.remove('show');toast('Aberto do GitHub: '+item.name)}catch(e){toast(e.message)}}
-function ghOpenCommit(){if(!ghToken||!ghCurrentRepo||!ghCurrentPath){toast('Abra um arquivo do GitHub primeiro');return}$('commitRepo').textContent=ghCurrentRepo;$('commitBranch').textContent=ghCurrentBranch;$('commitPath').textContent=ghCurrentPath;$('commitMessage').value='Atualiza '+ghCurrentPath.split('/').pop();commitModal.classList.add('show')}
-async function ghCommit(){const msg=$('commitMessage').value.trim();if(!msg){toast('Digite a mensagem do commit');return}const btn=$('commitConfirm');btn.disabled=true;btn.textContent='Commitando…';try{const body={message:msg,content:utf8ToB64(editor.value),branch:ghCurrentBranch};if(ghCurrentSha)body.sha=ghCurrentSha;const out=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(ghCurrentPath),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});ghCurrentSha=out.content.sha;commitModal.classList.remove('show');toast('Commit enviado com sucesso')}catch(e){toast(e.message)}finally{btn.disabled=false;btn.textContent='Commitar'}}
+async function ghOpenFile(item){
+  if(!/\.(html?|css|js|json|md|txt)$/i.test(item.name)){toast('Por segurança, a v3 abre arquivos de texto/código');return}
+  const existing=tabs.find(t=>t.gh&&t.gh.repo===ghCurrentRepo&&t.gh.branch===ghCurrentBranch&&t.gh.path===item.path);
+  if(existing){activateTab(existing.id);ghModal.classList.remove('show');toast('Aba já aberta: '+item.name);return}
+  try{const data=await ghApi('/repos/'+ghCurrentRepo+'/contents/'+encodeURI(item.path)+'?ref='+encodeURIComponent(ghCurrentBranch));newTab({name:item.name,content:b64ToUtf8(data.content),gh:{repo:ghCurrentRepo,branch:ghCurrentBranch,path:item.path,sha:data.sha}});ghModal.classList.remove('show');toast('Aberto do GitHub: '+item.name)}catch(e){toast(e.message)}
+}
+function ghOpenCommit(){const tab=getActiveTab();if(!ghToken||!tab||!tab.gh){toast('Abra um arquivo do GitHub primeiro');return}$('commitRepo').textContent=tab.gh.repo;$('commitBranch').textContent=tab.gh.branch;$('commitPath').textContent=tab.gh.path;$('commitMessage').value='Atualiza '+tab.gh.path.split('/').pop();commitModal.classList.add('show')}
+async function ghCommit(){const tab=getActiveTab();if(!tab||!tab.gh)return;const msg=$('commitMessage').value.trim();if(!msg){toast('Digite a mensagem do commit');return}const btn=$('commitConfirm');btn.disabled=true;btn.textContent='Commitando…';try{const body={message:msg,content:utf8ToB64(editor.value),branch:tab.gh.branch};if(tab.gh.sha)body.sha=tab.gh.sha;const out=await ghApi('/repos/'+tab.gh.repo+'/contents/'+encodeURI(tab.gh.path),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});tab.gh.sha=out.content.sha;tab.content=editor.value;tab.dirty=false;renderTabs();refreshSaveStatus();commitModal.classList.remove('show');toast('Commit enviado com sucesso')}catch(e){toast(e.message)}finally{btn.disabled=false;btn.textContent='Commitar'}}
 $('githubBtn').onclick=async()=>{ghModal.classList.add('show');if(ghToken&&!ghUser){try{ghUser=await ghApi('/user');$('ghUserLabel').textContent='@'+ghUser.login;await ghLoadRepos();ghSetConnected(true)}catch{sessionStorage.removeItem('brendaide_gh_token');ghToken='';ghSetConnected(false)}}else ghSetConnected(!!ghToken)};
 $('ghConnect').onclick=ghConnect;$('ghCancel').onclick=()=>ghModal.classList.remove('show');$('ghClose').onclick=()=>ghModal.classList.remove('show');$('ghRefresh').onclick=()=>ghBrowse(ghCurrentDir);
-$('ghRepo').onchange=async()=>{ghCurrentRepo=$('ghRepo').value;ghCurrentBranch=$('ghRepo').selectedOptions[0]?.dataset.branch||'main';$('ghBranch').value=ghCurrentBranch;ghCurrentPath='';ghCurrentSha='';$('commitBtn').disabled=true;await ghBrowse('')};
-$('ghBranch').onchange=()=>{ghCurrentBranch=$('ghBranch').value.trim()||'main';ghCurrentPath='';ghCurrentSha='';$('commitBtn').disabled=true;ghBrowse('')};
-$('ghDisconnect').onclick=()=>{ghToken='';ghUser=null;ghCurrentRepo='';ghCurrentPath='';ghCurrentSha='';sessionStorage.removeItem('brendaide_gh_token');$('ghToken').value='';ghSetConnected(false);toast('GitHub desconectado')};
+$('ghRepo').onchange=async()=>{ghCurrentRepo=$('ghRepo').value;ghCurrentBranch=$('ghRepo').selectedOptions[0]?.dataset.branch||'main';$('ghBranch').value=ghCurrentBranch;await ghBrowse('')};
+$('ghBranch').onchange=()=>{ghCurrentBranch=$('ghBranch').value.trim()||'main';ghBrowse('')};
+$('ghDisconnect').onclick=()=>{ghToken='';ghUser=null;ghCurrentRepo='';sessionStorage.removeItem('brendaide_gh_token');$('ghToken').value='';ghSetConnected(false);toast('GitHub desconectado')};
 $('commitBtn').onclick=ghOpenCommit;$('commitCancel').onclick=()=>commitModal.classList.remove('show');$('commitConfirm').onclick=ghCommit;
-
 
 $('railCode').onclick=()=>{editor.focus();toast('Editor')};
 $('railFiles').onclick=()=>fileInput.click();
 $('railSearch').onclick=()=>{$('searchInput').focus();toast('Buscar no código')};
 $('railSettings').onclick=()=>toast('Configurações: em breve');
-$('railInfo').onclick=()=>toast('Brenda IDE v3.3 • Minimal');
+$('railInfo').onclick=()=>toast('Brenda IDE v4 • Multi-arquivo');
 
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>

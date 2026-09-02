@@ -1,11 +1,11 @@
 {
-  "name": "Brenda IDE — Purple Minimal",
+  "name": "Brenda IDE — Multi-arquivo",
   "short_name": "Brenda IDE",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#100a1e",
   "theme_color": "#100a1e",
-  "description": "IDE web para HTML com preview em tempo real e integração opcional com GitHub.",
+  "description": "IDE web com abas para editar vários arquivos ao mesmo tempo (HTML, CSS, JS, JSON, Markdown, texto), preview em tempo real e integração opcional com GitHub.",
   "icons": [
     {
       "src": "icon-192.png",
