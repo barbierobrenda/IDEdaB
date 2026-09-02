@@ -1,17 +1,11 @@
-# Brenda IDE v4 — Multi-arquivo
+# Brenda IDE v3 — Blue iPad Edition
 
-## Novidades da v4
-- **Abas**: abra vários arquivos ao mesmo tempo (HTML, CSS, JS, JSON, Markdown, texto), cada um em sua própria aba, e alterne entre eles sem perder o que estava editando.
-- Toque em **+ Aba** (no cabeçalho) ou no **+** no final da barra de abas para criar um arquivo em branco; use **Abrir** para importar vários arquivos do dispositivo de uma vez.
-- Cada aba tem uma bolinha colorida por tipo de arquivo e um indicador de alterações não commitadas.
-- **GitHub**: cada arquivo aberto do repositório vira sua própria aba, com repositório/branch/caminho independentes — dá para editar e commitar vários arquivos do mesmo repo sem perder o contexto de cada um.
-- **Backup** agora baixa todas as abas abertas em um único arquivo `.json`.
-- Aparência renovada: tipografia Inter/JetBrains Mono, mais contraste e profundidade no tema escuro, foco visível no teclado e cores por linguagem nas abas.
-
-## Recursos existentes
-- Preview em tempo real para celular/tablet/desktop (somente para arquivos HTML).
-- Busca, formatação de HTML, copiar código, backup e atualização com backup.
+## Novidades
+- Identidade azul e logo próprio (`brenda-ide-logo.jpg`).
+- Preview em tempo real para celular/tablet/desktop.
+- Autosave, busca, formatação, copiar código, backup e atualização com backup.
 - Integração opcional com GitHub: listar repositórios com permissão de push, navegar em pastas, abrir arquivos e commitar.
+- Backup local automático antes de cada commit.
 - Token fica somente em `sessionStorage`: fechar a aba encerra a sessão da IDE.
 
 ## Conectar ao GitHub com o mínimo de acesso
@@ -33,3 +27,13 @@ Envie todos os arquivos deste ZIP para um repositório e habilite Settings → P
 - Barra lateral compacta com atalhos.
 - Rodapé e safe area do iPad em azul escuro, sem faixa branca.
 - Mantém GitHub, backup manual, preview e atualização.
+
+## v4.0 — Abas multi-arquivo
+- **Abas**: edite vários arquivos (HTML, CSS, JS, JSON, Markdown, TXT) ao mesmo tempo, com criação, fechamento e renomeação (duplo clique no nome da aba) de arquivos.
+- **Preview combinado**: o preview localiza automaticamente o `index.html` (ou o HTML aberto) e injeta os `<link rel="stylesheet">` e `<script src="...">` referenciados, desde que os arquivos estejam abertos em outras abas — assim dá pra trabalhar com `index.html` + `style.css` + `script.js` como um projeto real.
+- **Configurações** (ícone ⚙ na barra lateral): tema, tamanho da fonte do editor, tamanho da tabulação, quebra de linha automática, atraso do preview ao vivo, atalho para o GitHub e opção de limpar todos os arquivos da sessão.
+- **Persistência de sessão**: o projeto inteiro (todas as abas) é preservado ao usar "Atualizar" ou recarregar a aba, incluindo os metadados de arquivos abertos do GitHub (repositório/branch/caminho/sha) para permitir novos commits.
+- **Backup/restauração de projeto**: "Backup" agora baixa todos os arquivos abertos num único `.json`; abrir esse mesmo `.json` pelo botão "Abrir" restaura o projeto completo.
+- **Baixar arquivo atual**: novo botão para baixar só o arquivo da aba ativa, no formato correto.
+- **GitHub por aba**: cada aba aberta do GitHub guarda seu próprio repositório/branch/caminho, então dá pra ter arquivos de repositórios diferentes abertos ao mesmo tempo e commitar cada um separadamente.
+- Aparência renovada: nova barra de abas, sombras e cantos mais suaves, indicadores coloridos por tipo de arquivo, melhor foco de acessibilidade e tela de Configurações completa.
